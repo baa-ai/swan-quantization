@@ -1,0 +1,17 @@
+\begin{table}[t]
+\centering
+\caption{Correlation between SWAN sensitivity metrics and actual 4-bit quantization reconstruction error (NRMSE) on Qwen3-8B (252 tensors). Raw (unclamped) metric values used for correlation analysis. Higher $|\rho|$ indicates better predictive validity.}
+\label{tab:correlation}
+\begin{tabular}{lcccc}
+\toprule
+Metric & Spearman $\rho$ & $p$-value & Pearson $r$ & $p$-value \\
+\midrule
+  SVD Concentration & 0.2292 & $<$0.001 & 0.2362 & $<$0.001 \\
+  Kurtosis & 0.4819 & $<$0.001 & 0.6667 & $<$0.001 \\
+  Output Sensitivity & -0.1339 & 3.4e-02 & 0.2056 & 1.0e-03 \\
+  Cross-Layer Position & -0.2199 & $<$0.001 & 0.0320 & 6.1e-01 \\
+\midrule
+  \textbf{Composite (SWAN)} & -0.1038 & 1.0e-01 & 0.2924 & $<$0.001 \\
+\bottomrule
+\end{tabular}
+\end{table}

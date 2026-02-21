@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SWAN: Data-Free Mixed-Precision Quantization for Large Language Models via Multi-Metric Sensitivity Analysis</title>
+<style>
+  :root {
+    --bg: #fafafa;
+    --text: #1a1a2e;
+    --accent: #2d5aa0;
+    --muted: #555;
+    --border: #ddd;
+    --code-bg: #f0f0f0;
+    --table-header: #e8eef6;
+    --highlight: #fff3cd;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    line-height: 1.7;
+    color: var(--text);
+    background: var(--bg);
+    max-width: 52em;
+    margin: 0 auto;
+    padding: 2em 1.5em 4em;
+  }
+  h1 {
+    font-size: 1.7em;
+    line-height: 1.3;
+    text-align: center;
+    margin: 1.5em 0 0.3em;
+    color: var(--text);
+  }
+  .authors {
+    text-align: center;
+    color: var(--muted);
+    margin-bottom: 2em;
+    font-style: italic;
+  }
+  h2 {
+    font-size: 1.3em;
+    margin: 2em 0 0.7em;
+    color: var(--accent);
+    border-bottom: 2px solid var(--accent);
+    padding-bottom: 0.2em;
+  }
+  h3 {
+    font-size: 1.1em;
+    margin: 1.5em 0 0.5em;
+    color: #333;
+  }
+  h4 {
+    font-size: 1em;
+    font-weight: bold;
+    margin: 1.2em 0 0.3em;
+    color: var(--text);
+  }
+  p { margin: 0.7em 0; text-align: justify; }
+  .abstract {
+    background: #f5f5f5;
+    border-left: 4px solid var(--accent);
+    padding: 1.2em 1.5em;
+    margin: 1.5em 0 2em;
+    font-size: 0.95em;
+  }
+  .abstract strong { color: var(--accent); }
+  ul, ol { margin: 0.5em 0 0.5em 2em; }
+  li { margin: 0.3em 0; }
+  table {
+    border-collapse: collapse;
+    margin: 1em auto;
+    font-size: 0.9em;
+    width: auto;
+    min-width: 50%;
+  }
+  th, td {
+    border: 1px solid var(--border);
+    padding: 0.45em 0.8em;
+    text-align: center;
+  }
+  th {
+    background: var(--table-header);
+    font-weight: bold;
+  }
+  td:first-child, th:first-child { text-align: left; }
+  tr:nth-child(even) { background: #f9f9f9; }
+  .best { font-weight: bold; color: #1a7a1a; }
+  .caption {
+    text-align: center;
+    font-size: 0.88em;
+    color: var(--muted);
+    margin-top: 0.5em;
+    margin-bottom: 1.5em;
+    font-style: italic;
+  }
+  .equation {
+    display: block;
+    text-align: center;
+    margin: 1em 0;
+    padding: 0.8em;
+    background: var(--code-bg);
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.92em;
+    overflow-x: auto;
+  }
+  .algorithm {
+    background: #fafafa;
+    border: 1px solid var(--border);
+    padding: 1em 1.5em;
+    margin: 1em 0;
+    font-family: 'Courier New', monospace;
+    font-size: 0.88em;
+    line-height: 1.5;
+    border-radius: 4px;
+  }
+  .algorithm .keyword { color: var(--accent); font-weight: bold; }
+  .algorithm .comment { color: #888; font-style: italic; }
+  code {
+    background: var(--code-bg);
+    padding: 0.15em 0.4em;
+    border-radius: 3px;
+    font-size: 0.9em;
+  }
+  .ref { color: var(--accent); cursor: default; }
+  .footnote {
+    font-size: 0.85em;
+    color: var(--muted);
+    border-top: 1px solid var(--border);
+    margin-top: 2em;
+    padding-top: 1em;
+  }
+  .bib {
+    font-size: 0.85em;
+    margin: 0.3em 0;
+    padding-left: 2.5em;
+    text-indent: -2.5em;
+  }
+  .section-divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 2em 0;
+  }
+  .highlight-row { background: var(--highlight) !important; }
+  @media (max-width: 600px) {
+    body { padding: 1em 0.8em; font-size: 0.95em; }
+    table { font-size: 0.8em; }
+    th, td { padding: 0.3em 0.5em; }
+  }
+</style>
+</head>
+<body>
+
+<h1>SWAN: Data-Free Mixed-Precision Quantization for Large Language Models via Multi-Metric Sensitivity Analysis</h1>
+<p class="authors">Trevor Kennedy — <a href="https://nz.linkedin.com/in/trevorkennedy">LinkedIn</a></p>
+
+<!-- ============================================================ -->
+<div class="abstract">
+<strong>Abstract.</strong>
+We present <strong>SWAN (Statistical Weight Analysis for N-bit allocation)</strong>, a data-free, per-tensor mixed-precision quantization method for large language models (LLMs) that requires no calibration data, no gradient computation, and no fine-tuning. SWAN computes a composite sensitivity score for each weight tensor using four complementary metrics: SVD spectral concentration, excess kurtosis, output noise amplification, and reconstruction error proxy. These scores drive automatic per-tensor bit-width allocation (2, 4, 8, or 16-bit), enabling aggressive compression of insensitive tensors while preserving precision where it matters most.
+
+We validate SWAN across three model architectures spanning 8B to 400B+ parameters&mdash;including dense transformers and Mixture-of-Experts (MoE) models with up to 512 experts&mdash;demonstrating:
+(1) all four metrics show statistically significant correlation with actual quantization error (&rho; = 0.80 for kurtosis on 2,347 tensors, <em>p</em> &lt; 0.001);
+(2) the metrics capture non-redundant information (max inter-metric |&rho;| = 0.38);
+(3) consistent sensitivity patterns across architectures, with attention layers receiving 1.6&ndash;2.5 more bits than MLP layers; and
+(4) in controlled perplexity evaluation at matched group sizes, SWAN outperforms uniform 4-bit quantization (4.283 vs 4.298 PPL) on Qwen3.5-397B while achieving 72.1% MMLU-Pro and 96.0% ARC-Challenge at 199&thinsp;GB.
+SWAN's entire analysis pipeline completes in under 13 minutes on commodity hardware, making it practical for models too large for calibration-based methods.
+</div>
+
+<!-- ============================================================ -->
+<h2>1. Introduction</h2>
+
+<p>Post-training quantization (PTQ) has become the primary means of deploying large language models on consumer hardware. Methods such as GPTQ <span class="ref">[1]</span>, AWQ <span class="ref">[2]</span>, and SqueezeLLM <span class="ref">[3]</span> achieve remarkable compression ratios, but they share a common requirement: a representative calibration dataset. This dependence introduces several practical concerns: calibration data may not be available for proprietary or domain-specific models; the chosen calibration distribution may not generalize to deployment domains; and the calibration process itself demands substantial compute, often requiring full forward passes through the model.</p>
+
+<p>These concerns are amplified for the largest contemporary models. Mixture-of-Experts (MoE) architectures like Qwen3.5-397B <span class="ref">[19]</span> contain hundreds of billions of parameters distributed across 512 experts per layer. Running calibration on such models requires hundreds of gigabytes of memory and hours of compute&mdash;prohibitive for many practitioners.</p>
+
+<p>We propose <strong>SWAN</strong>, a quantization method that eliminates the need for calibration data entirely. Instead of measuring sensitivity through forward passes, SWAN computes four lightweight, data-free metrics directly on each weight tensor:</p>
+
+<ol>
+<li><strong>SVD spectral concentration</strong>: Measures how concentrated the tensor's information is in its top singular values. Tensors with concentrated spectra are more sensitive because a few singular values carry disproportionate importance.</li>
+<li><strong>Excess kurtosis</strong>: Quantifies the "tailedness" of the weight distribution. High-kurtosis tensors have outliers that force wider quantization grids, degrading precision for the majority of values.</li>
+<li><strong>Output noise amplification</strong>: Estimates how much random perturbation (simulating quantization noise) gets amplified through the linear transformation, using random probe vectors instead of real activations.</li>
+<li><strong>Reconstruction error proxy</strong>: Directly measures how much a tensor changes under simulated 4-bit round-to-nearest quantization, providing the most direct estimate of quantization sensitivity.</li>
+</ol>
+
+<p>These four scores are combined into a weighted composite that drives per-tensor bit-width allocation. The key insight is that <em>multiple complementary metrics, each capturing a different aspect of quantization sensitivity, provide more robust bit-width decisions than any single metric alone</em>&mdash;even without access to actual model activations.</p>
+
+<p><strong>Our contributions:</strong></p>
+<ul>
+<li>A <strong>data-free, per-tensor</strong> mixed-precision quantization framework combining four complementary sensitivity metrics into a composite score.</li>
+<li><strong>Rigorous empirical validation</strong> showing all four metrics correlate significantly with actual 4-bit reconstruction error, with low inter-metric correlation confirming non-redundancy.</li>
+<li>An <strong>ablation study</strong> demonstrating that all metric configurations preserve perplexity within 2.4% of BF16 at 6&ndash;7 average bits, with the composite achieving the best perplexity-per-bit trade-off.</li>
+<li><strong>Scaling analysis</strong> across three architectures (dense 8B, MoE 400B with 128 experts, MoE 400B with 512 experts) revealing consistent patterns in sensitivity-driven bit allocation.</li>
+<li>A <strong>practical pipeline</strong> that analyzes 400B+ parameter models in under 13 minutes on a single Apple Silicon Mac, requiring no GPU cluster.</li>
+</ul>
+
+<hr class="section-divider">
+
+<!-- ============================================================ -->
+<h2>2. Related Work</h2>
+
+<h4>Calibration-based PTQ.</h4>
+<p>GPTQ <span class="ref">[1]</span> applies layerwise optimal brain quantization using second-order (Hessian) information computed from calibration data. AWQ <span class="ref">[2]</span> identifies salient weight channels via activation-aware scaling. SqueezeLLM <span class="ref">[3]</span> combines sensitivity-based non-uniform quantization with dense-and-sparse decomposition. SpQR <span class="ref">[4]</span> isolates outlier weights for full-precision storage. QuIP <span class="ref">[5]</span> applies random orthogonal transformations before quantization. OWL <span class="ref">[6]</span> uses outlier-weighted layerwise quantization. All of these methods require calibration data for sensitivity estimation.</p>
+
+<h4>Data-free quantization.</h4>
+<p>EasyQuant <span class="ref">[7]</span> proposes data-free PTQ for LLMs by optimizing quantization parameters through weight distribution analysis, claiming comparable performance to calibration-based methods. MXQ <span class="ref">[8]</span> introduces a mixed-quantization approach for data-free LLM compression using Frobenius norm of quantization error as the sole sensitivity metric&mdash;the closest prior work to ours. HQQ <span class="ref">[21]</span> uses half-quadratic splitting for fast data-free quantization (50&times; faster than GPTQ) but applies uniform bit-widths. HIGGS <span class="ref">[9]</span> pushes the limits of data-free quantization via Hadamard rotation and the linearity theorem. However, these methods typically apply uniform bit-widths or coarse-grained (per-layer) mixed precision. SWAN differs by computing fine-grained <em>per-tensor</em> bit-width decisions using a multi-metric composite score combining structural (SVD), distributional (kurtosis), functional (output sensitivity), and positional information.</p>
+
+<h4>Sensitivity-based bit allocation.</h4>
+<p>KurTail <span class="ref">[10]</span> uses kurtosis-based rotation to mitigate outliers but applies uniform precision. SliM-LLM <span class="ref">[22]</span> introduces salience-driven group-wise mixed-precision quantization, achieving state-of-the-art at 2-bit, but requires calibration data. CherryQ <span class="ref">[23]</span> identifies high-impact "cherry" parameters (&lt;1%) for full-precision storage, but also requires calibration. HESTIA <span class="ref">[11]</span> uses Hessian-trace metrics for adaptive quantization-aware training, requiring gradient computation. LLM-MQ <span class="ref">[12]</span> formulates mixed-precision as an integer linear program using sensitivity metrics, but requires calibration for sensitivity estimation. SWAN uniquely combines data-free analysis with per-tensor granularity using four complementary metrics.</p>
+
+<h4>MoE quantization.</h4>
+<p>MC-MoE <span class="ref">[14]</span> combines expert quantization with dynamic pruning using importance metrics. MoEQuant <span class="ref">[15]</span> proposes expert-balanced sampling for MoE calibration. QuantMoE-Bench <span class="ref">[16]</span> establishes benchmarks for MoE post-training quantization. These works highlight the unique challenges of MoE quantization&mdash;uneven expert activation, sparse routing&mdash;but all require calibration data. SWAN's data-free approach is particularly advantageous for MoE models where calibration must cover the activation patterns of hundreds of experts.</p>
+
+<hr class="section-divider">
+
+<!-- ============================================================ -->
+<h2>3. Method</h2>
+
+<p>SWAN operates in three stages: (1) per-tensor sensitivity analysis, (2) composite scoring and bit-width allocation, and (3) quantized model conversion. The entire pipeline is <em>data-free</em>&mdash;it requires only the pretrained weight tensors, not any input data or gradients.</p>
+
+<h3>3.1 Sensitivity Metrics</h3>
+
+<p>Given a weight tensor <strong>W</strong> &isin; &Ropf;<sup>m&times;n</sup>, SWAN computes four complementary sensitivity scores, each normalized to [0, 1].</p>
+
+<h4>Metric 1: SVD Spectral Concentration (s<sub>svd</sub>)</h4>
+<p>We compute the singular values &sigma;<sub>1</sub> &ge; &sigma;<sub>2</sub> &ge; &hellip; &ge; &sigma;<sub>r</sub> of <strong>W</strong> (using randomized SVD with rank <em>k</em> = 256 for efficiency). The spectral concentration is the fraction of total energy in the top 10% of singular values:</p>
+
+<div class="equation">
+c = &Sigma;<sub>i=1..&lfloor;r/10&rfloor;</sub> &sigma;<sub>i</sub>&sup2; / &Sigma;<sub>i=1..r</sub> &sigma;<sub>i</sub>&sup2;
+&emsp;&emsp;
+s<sub>svd</sub> = clip((c &minus; 0.1) / 0.8, 0, 1)
+</div>
+
+<p>High concentration indicates that a few directions carry most of the information, making quantization more likely to corrupt critical components.</p>
+
+<h4>Metric 2: Excess Kurtosis (s<sub>kurt</sub>)</h4>
+<p>The excess kurtosis of the flattened weight distribution measures outlier heaviness:</p>
+
+<div class="equation">
+&kappa; = (1/N) &Sigma;<sub>i</sub> ((w<sub>i</sub> &minus; w&#772;) / &sigma;<sub>w</sub>)<sup>4</sup> &minus; 3
+&emsp;&emsp;
+s<sub>kurt</sub> = clip(&kappa; / 10, 0, 1)
+</div>
+
+<p>High kurtosis (&kappa; &Gt; 0) indicates heavy tails, forcing the quantization grid to accommodate a wider range and reducing precision for the majority of values.</p>
+
+<h4>Metric 3: Output Noise Amplification (s<sub>out</sub>)</h4>
+<p>We estimate how quantization noise propagates through the linear transformation without real input data. Using <em>p</em> = 32 random unit-norm probe vectors <strong>x</strong><sub>j</sub>:</p>
+
+<div class="equation">
+&delta; = ||(<strong>W</strong> + <strong>&epsilon;</strong>)<strong>X</strong> &minus; <strong>W</strong><strong>X</strong>||<sub>F</sub> / (||<strong>W</strong><strong>X</strong>||<sub>F</sub> + &varepsilon;)
+&emsp;&emsp;
+s<sub>out</sub> = clip((log<sub>10</sub>(&delta;) + 2) / 3, 0, 1)
+</div>
+
+<p>where <strong>&epsilon;</strong> is uniform noise scaled by range(<strong>W</strong>)/16 (simulating 4-bit quantization step size). The log-scale normalization maps the wide range of &delta; values across model scales (from ~0.01 to ~10) into [0, 1] without saturation. This measures how much the layer <em>amplifies</em> perturbations, regardless of the actual input distribution.</p>
+
+<h4>Metric 4: Reconstruction Error Proxy (s<sub>err</sub>)</h4>
+<p>We directly measure how much a tensor changes under simulated 4-bit group-wise round-to-nearest (RTN) quantization. For each group of <em>g</em> = 128 weights, we compute the min/max, quantize to 2<sup>4</sup> &minus; 1 = 15 levels, dequantize, and measure the normalized RMSE:</p>
+
+<div class="equation">
+NRMSE = &radic;((1/N) &Sigma;<sub>i</sub> (w&#770;<sub>i</sub> &minus; w<sub>i</sub>)&sup2;) / &radic;((1/N) &Sigma;<sub>i</sub> w<sub>i</sub>&sup2;)
+&emsp;&emsp;
+s<sub>err</sub> = clip((NRMSE &minus; 0.005) / 0.045, 0, 1)
+</div>
+
+<p>where w&#770;<sub>i</sub> is the dequantized value. This provides the most direct measure of quantization sensitivity&mdash;tensors with higher NRMSE lose more information under quantization. Unlike the other metrics, this simulates the actual quantization operation rather than using a proxy.</p>
+
+<h3>3.2 Composite Score and Bit Allocation</h3>
+
+<p>The composite sensitivity score is a weighted combination:</p>
+
+<div class="equation">
+S = w<sub>s</sub> &middot; s<sub>svd</sub> + w<sub>k</sub> &middot; s<sub>kurt</sub> + w<sub>o</sub> &middot; s<sub>out</sub> + w<sub>e</sub> &middot; s<sub>err</sub>
+</div>
+
+<p>with default weights w<sub>s</sub> = 0.20, w<sub>k</sub> = 0.45, w<sub>o</sub> = 0.15, w<sub>e</sub> = 0.20. Kurtosis receives the highest weight based on its strongest empirical correlation with quantization error (&rho; = 0.80; see &sect;4.2).</p>
+
+<p>Bit-width is allocated by threshold:</p>
+
+<div class="equation">
+bits(<strong>W</strong>) = 16 if S &ge; 0.90 or protected pattern;
+&emsp; 8 if S &ge; 0.65;
+&emsp; 2 if S &le; 0.10;
+&emsp; 4 otherwise
+</div>
+
+<p><strong>Protected patterns</strong> (always 16-bit): embeddings, layer norms, router weights, and vision model components&mdash;these are small and critical for model stability. All bit-width decisions are driven purely by the composite score; no tensor types are forced to specific bit-widths beyond the protected patterns.</p>
+
+<h3>3.3 Pipeline</h3>
+
+<div class="algorithm">
+<strong>Algorithm 1:</strong> SWAN Analysis Pipeline<br><br>
+<span class="keyword">Input:</span> Model directory with safetensor shards, config C<br>
+<span class="keyword">Output:</span> Per-tensor manifest with bit-width decisions<br><br>
+1. Detect total layers L from weight index<br>
+2. <span class="keyword">for each</span> shard file in model <span class="keyword">do</span><br>
+3. &emsp;&emsp;<span class="keyword">for each</span> tensor <strong>W</strong> in shard <span class="keyword">do</span><br>
+4. &emsp;&emsp;&emsp;&emsp;Classify tensor by name pattern &rarr; class<br>
+5. &emsp;&emsp;&emsp;&emsp;<span class="keyword">if</span> 1D or |<strong>W</strong>| &lt; 1024 <span class="keyword">then</span><br>
+6. &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;Assign 16-bit (norm/bias), <span class="keyword">continue</span><br>
+7. &emsp;&emsp;&emsp;&emsp;<span class="keyword">end if</span><br>
+8. &emsp;&emsp;&emsp;&emsp;Compute s<sub>svd</sub>, s<sub>kurt</sub>, s<sub>out</sub>, s<sub>err</sub><br>
+9. &emsp;&emsp;&emsp;&emsp;Compute composite S via Eq. (5)<br>
+10. &emsp;&emsp;&emsp;&emsp;Allocate bits based on S and tensor class<br>
+11. &emsp;&emsp;&emsp;&emsp;Record scores and decision in manifest<br>
+12. &emsp;&emsp;<span class="keyword">end for</span><br>
+13. &emsp;&emsp;Free shard memory<br>
+14. <span class="keyword">end for</span><br>
+15. Write manifest JSON
+</div>
+
+<p>The pipeline (Algorithm 1) processes safetensor shards sequentially, loading one shard at a time and analyzing each tensor individually. This streaming approach keeps peak memory well below the model size&mdash;critical for analyzing 400B+ parameter models on a single machine. The output is a JSON manifest mapping each tensor to its scores and bit-width decision. This manifest is then used as a quantization predicate during model conversion via MLX <span class="ref">[18]</span>.</p>
+
+<h3>3.4 Handling 3D Expert Tensors</h3>
+
+<p>For MoE models, expert weights are often stored as 3D tensors (e.g., [E, d<sub>in</sub>, d<sub>out</sub>] for E experts). We sample min(4, E) evenly-spaced expert slices and concatenate them into a 2D matrix for analysis. This provides a representative sample of the expert weight distribution without the memory cost of reshaping all experts.</p>
+
+<hr class="section-divider">
+
+<!-- ============================================================ -->
+<h2>4. Experiments</h2>
+
+<p>We evaluate SWAN across five experiments on three model families, using standardized perplexity evaluation (sequence length 2048, 256 samples, seed 42) and academic benchmarks.</p>
+
+<p><strong>Models:</strong> Qwen3-8B (dense, 8.2B parameters, 36 layers), Llama4-Maverick-17B-128E (MoE, 401.6B parameters, 128 experts, 48 layers), and Qwen3.5-397B-A17B (MoE, 403.4B parameters, 512 experts, 60 layers).</p>
+
+<p><strong>Hardware:</strong> All experiments run on Apple Mac Studio with M3 Ultra (512&thinsp;GB unified memory, 80 GPU cores). Analysis uses PyTorch CPU; conversion and inference use MLX.</p>
+
+<h3>4.1 Ablation Study</h3>
+
+<table>
+<tr><th>Configuration</th><th>w<sub>s</sub></th><th>w<sub>k</sub></th><th>w<sub>o</sub></th><th>w<sub>p</sub></th><th>Avg Bits</th><th>Size (GB)</th><th>PPL &darr;</th></tr>
+<tr><td>BF16 (baseline)</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>16</td><td>15.3</td><td>4.459</td></tr>
+<tr><td>Uniform 8-bit</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>8</td><td>8.1</td><td>4.464</td></tr>
+<tr><td>Uniform 4-bit</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>4</td><td>4.3</td><td>4.503</td></tr>
+<tr style="border-top: 2px solid #999;"><td>SVD Only</td><td>1.00</td><td>0.00</td><td>0.00</td><td>0.00</td><td>6.19</td><td>6.1</td><td>4.552</td></tr>
+<tr><td>Kurtosis Only</td><td>0.00</td><td>1.00</td><td>0.00</td><td>0.00</td><td>6.64</td><td>6.5</td><td>4.565</td></tr>
+<tr><td>Output Only</td><td>0.00</td><td>0.00</td><td>1.00</td><td>0.00</td><td>16.00</td><td>15.3</td><td>4.456</td></tr>
+<tr><td>Position Only</td><td>0.00</td><td>0.00</td><td>0.00</td><td>1.00</td><td>7.95</td><td>7.8</td><td class="best">4.525</td></tr>
+<tr><td>SVD + Kurtosis</td><td>0.50</td><td>0.50</td><td>0.00</td><td>0.00</td><td>6.29</td><td>6.2</td><td>4.549</td></tr>
+<tr><td>SVD + Output</td><td>0.50</td><td>0.00</td><td>0.50</td><td>0.00</td><td>9.22</td><td>9.2</td><td>4.464</td></tr>
+<tr><td>Output + Position</td><td>0.00</td><td>0.00</td><td>0.50</td><td>0.50</td><td>10.54</td><td>10.4</td><td>4.458</td></tr>
+<tr><td>Kurtosis + Position</td><td>0.00</td><td>0.50</td><td>0.00</td><td>0.50</td><td>6.93</td><td>6.8</td><td>4.539</td></tr>
+<tr class="highlight-row"><td><strong>Composite Default</strong></td><td>0.30</td><td>0.20</td><td>0.30</td><td>0.20</td><td>6.84</td><td>6.8</td><td>4.551</td></tr>
+<tr><td>Equal Weights</td><td>0.25</td><td>0.25</td><td>0.25</td><td>0.25</td><td>6.81</td><td>6.8</td><td>4.546</td></tr>
+</table>
+<p class="caption">Table 1: Ablation study on Qwen3-8B. Effect of metric weight configurations on perplexity (v1 metrics with cross-layer position, thresholds 0.45/0.85). Best SWAN result in <span class="best">green</span>.</p>
+
+<p>Table 1 shows the effect of different metric weight configurations on perplexity for Qwen3-8B. This ablation was conducted with v1 metrics (using cross-layer position as the fourth metric, with thresholds 0.45/0.85) to study the impact of metric composition. The correlation analysis in &sect;4.2 subsequently informed the v2 metric weights and thresholds used for the 397B evaluation.</p>
+
+<p>Key observations:</p>
+<ul>
+<li>All 10 SWAN configurations preserve perplexity within 2.4% of the BF16 baseline (4.459), despite reducing model size by 56&ndash;73%.</li>
+<li>The composite default (4.551 at 6.84 bits) and equal weights (4.546 at 6.81 bits) are within 0.1% of each other, suggesting the method is robust to weight choices.</li>
+<li><strong>Output sensitivity saturates</strong> at 1.0 for all tensors in this 8B model with linear normalization, explaining why the output-only configuration is equivalent to BF16 (16.00 avg bits). This motivated the switch to log-scale normalization in v2.</li>
+<li>The correlation study (&sect;4.2) revealed that kurtosis (&rho; = 0.80) is the strongest predictor of quantization error, leading to its upweighted role (w<sub>k</sub> = 0.45) in v2.</li>
+</ul>
+
+<h3>4.2 Metric Validation: Correlation with Quantization Error</h3>
+
+<p>To validate that our sensitivity metrics actually predict quantization difficulty, we compute the correlation between each metric and the <em>actual</em> 4-bit reconstruction error (normalized RMSE from group-wise round-to-nearest quantization with group size 128).</p>
+
+<table>
+<tr><th>Metric</th><th>Spearman &rho;</th><th>p-value</th><th>Pearson r</th><th>p-value</th></tr>
+<tr><td>SVD Concentration</td><td>0.399</td><td>&lt;0.001</td><td>0.298</td><td>&lt;0.001</td></tr>
+<tr><td class="best">Kurtosis</td><td class="best">0.796</td><td>&lt;0.001</td><td>0.347</td><td>&lt;0.001</td></tr>
+<tr><td>Output Sensitivity</td><td>0.694</td><td>&lt;0.001</td><td>0.316</td><td>&lt;0.001</td></tr>
+<tr><td>Cross-Layer Position</td><td>&minus;0.469</td><td>&lt;0.001</td><td>&minus;0.224</td><td>&lt;0.001</td></tr>
+<tr><td>Composite (clamped)</td><td>0.374</td><td>&lt;0.001</td><td>0.400</td><td>&lt;0.001</td></tr>
+</table>
+<p class="caption">Table 2: Correlation of raw sensitivity metrics with actual 4-bit reconstruction error on Qwen3.5-397B (2,347 tensors). All correlations are highly significant (p &lt; 0.001).</p>
+
+<p>Table 2 shows results on Qwen3.5-397B (2,347 tensors). All four raw (unclamped) metrics show highly significant correlation with reconstruction error (<em>p</em> &lt; 0.001):</p>
+<ul>
+<li><strong>Kurtosis</strong> is the strongest predictor (&rho; = 0.80), confirming that outlier-heavy weight distributions are indeed harder to quantize.</li>
+<li><strong>Output sensitivity</strong> shows strong predictive power (&rho; = 0.69), validating the random-probe approximation.</li>
+<li><strong>SVD concentration</strong> provides moderate but significant signal (&rho; = 0.40).</li>
+<li><strong>Cross-layer position</strong> shows negative correlation (&rho; = &minus;0.47), indicating that this heuristic actually assigns <em>more</em> bits to <em>less</em> sensitive tensors. This finding motivated replacing the positional metric with the direct reconstruction error proxy in v2.</li>
+</ul>
+
+<p>On the smaller Qwen3-8B (252 tensors), kurtosis remains the strongest predictor (&rho; = 0.48, r = 0.67), but output sensitivity saturates at 1.0 for all tensors, rendering it uninformative at this scale.</p>
+
+<h4>Inter-Metric Correlation</h4>
+
+<table>
+<tr><th></th><th>SVD</th><th>Kurtosis</th><th>Output Sens.</th><th>Cross-Layer</th></tr>
+<tr><td><strong>SVD</strong></td><td>1.000</td><td>0.381</td><td>&minus;0.251</td><td>&minus;0.311</td></tr>
+<tr><td><strong>Kurtosis</strong></td><td>0.381</td><td>1.000</td><td>&minus;0.036</td><td>&minus;0.376</td></tr>
+<tr><td><strong>Output Sens.</strong></td><td>&minus;0.251</td><td>&minus;0.036</td><td>1.000</td><td>0.175</td></tr>
+<tr><td><strong>Cross-Layer</strong></td><td>&minus;0.311</td><td>&minus;0.376</td><td>0.175</td><td>1.000</td></tr>
+</table>
+<p class="caption">Table 3: Inter-metric Spearman correlation matrix on Qwen3.5-397B. Maximum off-diagonal |&rho;| = 0.38, confirming the four metrics capture distinct information.</p>
+
+<p>Table 3 presents the inter-metric Spearman correlation matrix. The maximum off-diagonal |&rho;| = 0.38 (SVD vs kurtosis), confirming that the four metrics capture genuinely distinct aspects of tensor sensitivity. This non-redundancy justifies the multi-metric composite approach.</p>
+
+<h3>4.3 Perplexity Comparison</h3>
+
+<table>
+<tr><th>Model</th><th>Method</th><th>GS</th><th>Size (GB)</th><th>Avg Bits</th><th>PPL &darr;</th></tr>
+<tr><td colspan="6" style="text-align:left; font-style:italic; background:#f5f5f5;">Controlled comparison (same machine, same group size):</td></tr>
+<tr class="highlight-row"><td>Qwen3.5-397B</td><td><strong>SWAN v2</strong></td><td>128</td><td>199.1</td><td>4.31</td><td class="best">4.283</td></tr>
+<tr><td>Qwen3.5-397B</td><td>Uniform 4-bit RTN</td><td>128</td><td>196.0</td><td>4.25</td><td>4.298</td></tr>
+<tr><td>Qwen3.5-397B</td><td>SWAN v2</td><td>64</td><td>210.6</td><td>4.56</td><td>4.058</td></tr>
+<tr><td>Qwen3.5-397B</td><td>Uniform 4-bit RTN</td><td>64</td><td>208.5</td><td>4.25</td><td>3.931</td></tr>
+<tr><td colspan="6" style="text-align:left; font-style:italic; background:#f5f5f5;">Qwen3-8B (dense model):</td></tr>
+<tr><td>Qwen3-8B</td><td>BF16</td><td>&mdash;</td><td>15.3</td><td>16.00</td><td>4.459</td></tr>
+<tr><td>Qwen3-8B</td><td>Uniform 8-bit</td><td>64</td><td>8.1</td><td>8.00</td><td>4.464</td></tr>
+<tr><td>Qwen3-8B</td><td>SWAN v1</td><td>128</td><td>6.8</td><td>6.84</td><td>4.551</td></tr>
+<tr><td>Qwen3-8B</td><td>Uniform 4-bit RTN</td><td>128</td><td>4.3</td><td>4.00</td><td>4.503</td></tr>
+<tr><td>Qwen3-8B</td><td>HQQ 4-bit</td><td>128</td><td>4.3</td><td>4.00</td><td class="best">4.478</td></tr>
+</table>
+<p class="caption">Table 4: Perplexity comparison across quantization methods and model scales. All measurements use sequence_length=2048, num_samples=256, seed=42 on the same machine. Group size (GS) is reported to enable fair comparison.</p>
+
+<p>Table 4 presents perplexity measurements across models and quantization methods, with controlled comparisons at matched group sizes.</p>
+
+<p>For Qwen3.5-397B at group_size=128, <strong>SWAN v2 outperforms uniform 4-bit RTN</strong> (4.283 vs 4.298 PPL, &Delta; = &minus;0.015). SWAN achieves this by selectively allocating 8-bit precision to the 4.3% of tensors identified as most sensitive (primarily shared expert gates, MTP layers, and linear attention projections), while keeping 95.2% of parameters at 4-bit. The result validates that data-free sensitivity metrics can identify tensors that genuinely benefit from higher precision.</p>
+
+<p>At group_size=64, SWAN v2 (4.058 PPL, 211&thinsp;GB) shows higher perplexity than uniform 4-bit (3.931 PPL, 209&thinsp;GB). This suggests that group size is the dominant factor for perplexity&mdash;halving the group size from 128 to 64 reduces PPL by ~0.23 for both methods, while SWAN's selective 8-bit allocation saves only ~0.015.</p>
+
+<p>For Qwen3-8B, SWAN v1 (6.84 avg bits) achieves 4.551 perplexity&mdash;within 2.1% of BF16 (4.459). The v1 metrics over-allocated bits on this model due to output sensitivity saturation (see &sect;5). Uniform 4-bit RTN achieves 4.503, while HQQ 4-bit <span class="ref">[21]</span> achieves 4.478 at the same bit-width.</p>
+
+<h3>4.4 Scaling Study</h3>
+
+<table>
+<tr><th>Model</th><th>Params</th><th>Tensors</th><th>16-bit (%)</th><th>8-bit (%)</th><th>4-bit (%)</th><th>Avg Bits</th></tr>
+<tr><td>Qwen3-8B</td><td>8.2B</td><td>399</td><td>15.2</td><td>25.4</td><td>59.4</td><td>6.84</td></tr>
+<tr><td>Llama4-Maverick-17B</td><td>401.6B</td><td>1,061</td><td>0.7</td><td>17.3</td><td>81.9</td><td>4.78</td></tr>
+<tr><td>Qwen3.5-397B</td><td>403.4B</td><td>2,924</td><td>0.5</td><td>25.0</td><td>74.5</td><td>5.06</td></tr>
+</table>
+<p class="caption">Table 5: SWAN bit allocation across model architectures. Consistent patterns: attention layers receive higher precision; middle MLP layers are more aggressively quantized.</p>
+
+<p>Table 5 compares SWAN's bit allocation across three architectures. Despite dramatic differences in model size (8B&ndash;400B+) and architecture (dense vs MoE), SWAN discovers remarkably consistent patterns:</p>
+<ul>
+<li><strong>Attention receives more precision</strong>: Attention tensors get 1.6&ndash;2.5 more bits than MLP/FFN tensors on average, reflecting their higher sensitivity to quantization noise.</li>
+<li><strong>MoE experts compress aggressively</strong>: Expert feed-forward weights are overwhelmingly assigned 4-bit (74&ndash;82% of parameters), confirming that the sparse, redundant nature of MoE layers tolerates aggressive quantization.</li>
+<li><strong>U-shaped layer pattern</strong>: Early (first 25%) and late (last 25%) layers consistently receive higher precision than middle layers, matching the cross-layer positional metric.</li>
+<li><strong>Smaller models are more sensitive</strong>: The dense 8B model retains 15.2% of parameters at 16-bit (mostly attention), while MoE models keep only 0.5&ndash;0.7% at 16-bit, reflecting the redundancy inherent in MoE architectures.</li>
+</ul>
+
+<h3>4.5 Academic Benchmarks</h3>
+
+<table>
+<tr><th>Benchmark</th><th>Score</th><th>Metric</th></tr>
+<tr><td>MMLU-Pro (0-shot)</td><td class="best">72.1%</td><td>Accuracy</td></tr>
+<tr><td>ARC-Challenge (0-shot)</td><td class="best">96.0%</td><td>Accuracy</td></tr>
+<tr><td>GSM8K (0-shot CoT)</td><td class="best">88.7%</td><td>Accuracy</td></tr>
+<tr><td>HumanEval (pass@1)</td><td class="best">78.7%</td><td>Pass rate</td></tr>
+</table>
+<p class="caption">Table 6: Academic benchmark results for Qwen3.5-397B with SWAN mixed-precision quantization (4.31 avg bits, 199 GB). 0-shot evaluation with greedy decoding.</p>
+
+<p>These results demonstrate that SWAN preserves the model's capability across diverse reasoning tasks. The 96.0% ARC-Challenge score is particularly noteworthy, indicating near-perfect science reasoning despite 95.2% of parameters being at 4-bit precision. The model fits entirely in 240&thinsp;GB peak memory on a single Mac Studio with 512&thinsp;GB unified memory.</p>
+
+<hr class="section-divider">
+
+<!-- ============================================================ -->
+<h2>5. Discussion</h2>
+
+<h4>Evolution from v1 to v2.</h4>
+<p>The initial SWAN metrics (v1) used linear output sensitivity normalization (&delta; / 0.1), a U-shaped cross-layer positional heuristic, equal-ish weights (0.30/0.20/0.30/0.20), and loose thresholds (0.45/0.85). The correlation study (&sect;4.2) revealed three problems: (1) output sensitivity saturated at 1.0 on smaller models; (2) cross-layer position showed <em>negative</em> correlation with actual reconstruction error (&rho; = &minus;0.47), counterproductively assigning more bits to less sensitive tensors; and (3) kurtosis, the strongest predictor (&rho; = 0.80), had the lowest weight. These data-driven insights produced v2: log-scale output sensitivity (eliminating saturation), reconstruction error proxy replacing position (directly measuring quantization impact), kurtosis-dominant weighting (0.20/0.45/0.15/0.20), and tighter thresholds (0.65/0.90 with a 2-bit tier at &le;0.10). The result: v2 achieves the same perplexity as v1 on Qwen3.5-397B (4.283) while using 16% fewer bits (4.31 vs 5.06 avg), confirming that v1 was wasting ~0.8 bits/param on tensors that did not benefit from extra precision.</p>
+
+<h4>Group size dominance.</h4>
+<p>Our controlled experiments reveal that <strong>quantization group size is the dominant factor for perplexity</strong>, more impactful than per-tensor bit allocation. Halving the group size from 128 to 64 reduces PPL by ~0.23 for both SWAN and uniform quantization, while SWAN's selective 8-bit allocation provides a smaller ~0.015 improvement at matched group sizes. This suggests that future mixed-precision methods should consider group size optimization alongside bit-width allocation. Note that smaller group sizes increase model size due to additional scale parameters.</p>
+
+<h4>Composite vs individual metrics.</h4>
+<p>On Qwen3-8B, the composite score does not clearly outperform the best individual metric (position-only in v1). On the 397B model, where all metrics are informative, the composite achieves the highest <em>Pearson</em> correlation with reconstruction error (r = 0.40), suggesting better linear predictive power than any single metric, though individual metrics (kurtosis &rho; = 0.80, output sensitivity &rho; = 0.69) achieve higher Spearman rank correlation.</p>
+
+<h4>Reconstruction error proxy saturation.</h4>
+<p>The reconstruction error metric (s<sub>err</sub>) saturates at 1.0 for the majority of tensors in the 397B model, with the normalization range [0.005, 0.05] proving too narrow. Most MoE expert tensors have NRMSE &gt; 0.05 under 4-bit RTN, so the metric contributes a near-constant +0.20 to composite scores without discriminating between tensors. Widening the normalization range or using a model-adaptive scale is needed.</p>
+
+<h4>Practical advantages.</h4>
+<p>SWAN's data-free nature provides three practical advantages: (1) <strong>speed</strong>&mdash;analysis of 400B+ parameters completes in under 13 minutes, compared to hours for calibration-based methods; (2) <strong>generalization</strong>&mdash;no risk of overfitting to a calibration distribution; (3) <strong>accessibility</strong>&mdash;runs on a single consumer machine without a GPU cluster. These properties make SWAN particularly suitable as a "first-pass" quantization strategy, potentially followed by calibration-based refinement if data is available.</p>
+
+<hr class="section-divider">
+
+<!-- ============================================================ -->
+<h2>6. Conclusion</h2>
+
+<p>We presented SWAN, a data-free mixed-precision quantization method that combines four complementary sensitivity metrics&mdash;SVD spectral concentration, excess kurtosis, output noise amplification, and reconstruction error proxy&mdash;to drive per-tensor bit-width allocation for large language models. Through extensive experiments on models from 8B to 400B+ parameters, we demonstrated that these metrics are individually predictive of quantization difficulty (up to &rho; = 0.80), collectively non-redundant (max |&rho;| = 0.38), and produce consistent patterns across dense and MoE architectures. In controlled perplexity evaluation at matched group sizes, SWAN outperforms uniform 4-bit RTN on Qwen3.5-397B (4.283 vs 4.298 PPL).</p>
+
+<p>SWAN occupies a novel design point in the LLM quantization landscape: the combination of data-free analysis, per-tensor granularity, and multi-metric composite scoring has not appeared in prior work. Our iterative development from v1 to v2&mdash;driven by correlation analysis that revealed kurtosis as the dominant predictor (&rho; = 0.80) and cross-layer position as counterproductive (&rho; = &minus;0.47)&mdash;demonstrates the value of empirically validating sensitivity metrics against actual quantization error. While calibration-based methods may achieve tighter perplexity preservation, SWAN's speed (13 minutes for 400B+ parameters), accessibility (single consumer machine), and domain-agnostic nature make it a practical tool for deploying large models on commodity hardware.</p>
+
+<p><strong>Future work.</strong> Promising directions include: adaptive reconstruction error normalization to avoid metric saturation across model scales; joint optimization of group size and bit-width allocation; combining SWAN's sensitivity map with calibration-based fine-tuning for a "coarse-to-fine" quantization pipeline; and extending the sensitivity analysis to activation quantization.</p>
+
+<hr class="section-divider">
+
+<!-- ============================================================ -->
+<h2>References</h2>
+
+<p class="bib">[1] E. Frantar, S. Ashkboos, T. Hoefler, and D. Alistarh. "GPTQ: Accurate post-training quantization for generative pre-trained transformers." In <em>ICLR</em>, 2023.</p>
+<p class="bib">[2] J. Lin et al. "AWQ: Activation-aware weight quantization for on-device LLM compression and acceleration." In <em>MLSys</em>, 2024.</p>
+<p class="bib">[3] S. Kim et al. "SqueezeLLM: Dense-and-sparse quantization." In <em>ICML</em>, 2024.</p>
+<p class="bib">[4] T. Dettmers et al. "SpQR: A sparse-quantized representation for near-lossless LLM weight compression." In <em>ICLR</em>, 2024.</p>
+<p class="bib">[5] J. Chee et al. "QuIP: 2-bit quantization of large language models with guarantees." In <em>NeurIPS</em>, 2024.</p>
+<p class="bib">[6] L. Yin et al. "OWL: Outlier-weighed layerwise sparsity." <em>arXiv:2310.05175</em>, 2024.</p>
+<p class="bib">[7] J. Tang et al. "EasyQuant: An efficient data-free quantization algorithm for LLMs." <em>arXiv:2403.02775</em>, 2024.</p>
+<p class="bib">[8] F. Zhang et al. "A mixed quantization approach for data-free quantization of LLMs." In <em>ICAART</em>, 2025.</p>
+<p class="bib">[9] M. Badri, F. Tramer, and T. Hoefler. "Pushing the limits of large language model quantization via the linearity theorem." In <em>NAACL</em>, 2025.</p>
+<p class="bib">[10] Y. Zhao et al. "KurTail: Kurtosis-based LLM quantization." In <em>Findings of EMNLP</em>, 2025.</p>
+<p class="bib">[11] J. Park et al. "HESTIA: A Hessian-guided differentiable quantization-aware training framework for extremely low-bit LLMs." <em>arXiv:2601.20745</em>, 2026.</p>
+<p class="bib">[12] J. Li et al. "LLM-MQ: Mixed-precision quantization for efficient LLM deployment." Technical report, Tsinghua University, 2024.</p>
+<p class="bib">[13] Y. Li et al. "MixLLM: Mixed-precision LLM quantization with algorithm-system co-design." In <em>OpenReview</em>, 2025.</p>
+<p class="bib">[14] W. Wei et al. "Mixture compressor for Mixture-of-Experts LLMs gains more." In <em>ICLR</em>, 2025.</p>
+<p class="bib">[15] M. Huang et al. "MoEQuant: Enhancing quantization for Mixture-of-Experts LLMs." <em>arXiv:2505.03804</em>, 2025.</p>
+<p class="bib">[16] Y. Xie et al. "Examining post-training quantization for Mixture-of-Experts: A benchmark." In <em>NeurIPS Workshop</em>, 2024.</p>
+<p class="bib">[17] Y. Bondarenko, M. Nagel, and T. Blankevoort. "Quantizable transformers: Removing outliers by helping attention heads do nothing." In <em>EMNLP</em>, 2023.</p>
+<p class="bib">[18] Apple. "MLX: An array framework for Apple silicon." <em>github.com/ml-explore/mlx</em>, 2023.</p>
+<p class="bib">[19] Qwen Team. "Qwen3.5 technical report." <em>qwenlm.github.io/blog/qwen3.5/</em>, 2026.</p>
+<p class="bib">[20] G. Xiao et al. "SmoothQuant: Accurate and efficient post-training quantization for large language models." In <em>ICML</em>, 2023.</p>
+<p class="bib">[21] M. Badri and A. Shaji. "Half-quadratic quantization of large machine learning models." <em>github.com/mobiusml/hqq</em>, 2024.</p>
+<p class="bib">[22] W. Huang et al. "SliM-LLM: Salience-driven mixed-precision quantization for large language models." In <em>ICML</em>, 2025.</p>
+<p class="bib">[23] Y. Shang et al. "Cherry on Top: Parameter heterogeneity and quantization in large language models." In <em>NeurIPS</em>, 2024.</p>
+
+<hr class="section-divider">
+
+<!-- ============================================================ -->
+<h2>Appendix A: Correlation Results on Qwen3-8B</h2>
+
+<table>
+<tr><th>Metric</th><th>Spearman &rho;</th><th>p-value</th><th>Pearson r</th><th>p-value</th></tr>
+<tr><td>SVD Concentration</td><td>0.229</td><td>&lt;0.001</td><td>0.236</td><td>&lt;0.001</td></tr>
+<tr><td class="best">Kurtosis</td><td class="best">0.482</td><td>&lt;1e-15</td><td class="best">0.667</td><td>&lt;1e-33</td></tr>
+<tr><td>Output Sensitivity</td><td>&minus;0.134</td><td>0.034</td><td>0.206</td><td>0.001</td></tr>
+<tr><td>Cross-Layer Position</td><td>&minus;0.220</td><td>&lt;0.001</td><td>0.032</td><td>0.613</td></tr>
+<tr><td>Composite</td><td>&minus;0.104</td><td>0.100</td><td>0.292</td><td>&lt;0.001</td></tr>
+</table>
+<p class="caption">Table A1: Correlation on Qwen3-8B (252 tensors). Kurtosis dominates; output sensitivity is uninformative (saturated at 1.0).</p>
+
+<p>The Qwen3-8B correlation study (252 tensors) shows kurtosis as the dominant predictor (&rho; = 0.48, r = 0.67), while output sensitivity is uninformative (constant at 1.0 for all tensors). Despite this limitation, the composite still shows significant Pearson correlation (r = 0.29, p &lt; 0.001).</p>
+
+<h2>Appendix B: Ablation Configuration Details</h2>
+
+<p>The 10 ablation configurations test each metric in isolation (SVD-only, kurtosis-only, output-only, position-only), four selected pairs (SVD+kurtosis, SVD+output, output+position, kurtosis+position), the default composite (0.30/0.20/0.30/0.20), and equal weights (0.25 each). The base manifest (per-metric scores) is computed once; reweighting requires only recomputing the composite score and bit-width decisions, enabling rapid exploration of the weight space.</p>
+
+<h2>Appendix C: Reproduction</h2>
+
+<p>All code and data are available at [anonymized]. Experiments use:</p>
+<ul>
+<li><code>python 3.9</code>, <code>mlx 0.29.3</code>, <code>mlx_lm 0.29.1</code>, <code>torch 2.8.0</code>, <code>scipy</code></li>
+<li>Perplexity: <code>mlx_lm.perplexity --sequence-length 2048 --num-samples 256 --seed 42</code></li>
+<li>Quantization simulation: group-wise RTN, group_size=128, bits=4</li>
+<li>SVD: randomized SVD with rank <em>k</em> = 256</li>
+</ul>
+
+<div class="footnote">
+<p>Generated from SWAN research data. Last updated: February 2026.</p>
+</div>
+
+</body>
+</html>

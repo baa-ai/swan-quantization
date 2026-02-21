@@ -1,0 +1,25 @@
+\begin{table}[t]
+\centering
+\caption{Ablation study: effect of metric weight configurations on perplexity. Weights for SVD ($w_s$), Kurtosis ($w_k$), Output Sensitivity ($w_o$), and Cross-Layer Position ($w_p$). Best SWAN result in \textbf{bold}.}
+\label{tab:ablation}
+\begin{tabular}{lccccrrr}
+\toprule
+Configuration & $w_s$ & $w_k$ & $w_o$ & $w_p$ & Avg Bits & Size (GB) & PPL $\downarrow$ \\
+\midrule
+  BF16 (baseline) & --- & --- & --- & --- & 16 & 15.3 & 4.459 \\
+  Uniform 8-bit & --- & --- & --- & --- & 8 & 8.1 & 4.464 \\
+  Uniform 4-bit & --- & --- & --- & --- & 4 & 4.3 & 4.503 \\
+\midrule
+  Svd Only & 1.00 & 0.00 & 0.00 & 0.00 & 6.19 & 6.1 & 4.552 \\
+  Kurtosis Only & 0.00 & 1.00 & 0.00 & 0.00 & 6.64 & 6.5 & 4.565 \\
+  Output Only & 0.00 & 0.00 & 1.00 & 0.00 & 16.00 & 15.3 & 4.456 \\
+  Position Only & 0.00 & 0.00 & 0.00 & 1.00 & 7.95 & 7.8 & \textbf{4.525} \\
+  Svd Kurtosis & 0.50 & 0.50 & 0.00 & 0.00 & 6.29 & 6.2 & 4.549 \\
+  Svd Output & 0.50 & 0.00 & 0.50 & 0.00 & 9.22 & 9.2 & 4.464 \\
+  Output Position & 0.00 & 0.00 & 0.50 & 0.50 & 10.54 & 10.4 & 4.458 \\
+  Kurtosis Position & 0.00 & 0.50 & 0.00 & 0.50 & 6.93 & 6.8 & 4.539 \\
+  Composite Default & 0.30 & 0.20 & 0.30 & 0.20 & 6.84 & 6.8 & 4.551 \\
+  Equal Weights & 0.25 & 0.25 & 0.25 & 0.25 & 6.81 & 6.8 & 4.546 \\
+\bottomrule
+\end{tabular}
+\end{table}

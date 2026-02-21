@@ -1,0 +1,34 @@
+{
+  "model_name": "qwen3-8b-bf16",
+  "variant": "hqq_4bit_g128",
+  "method": "hqq",
+  "quantization": {
+    "nbits": 4,
+    "group_size": 128,
+    "axis": 1,
+    "hqq_version": "0.2.8.post1"
+  },
+  "parameters": {
+    "sequence_length": 2048,
+    "num_samples": 256,
+    "seed": 42,
+    "batch_size": 2,
+    "dataset": "allenai/tulu-3-sft-mixture"
+  },
+  "results": {
+    "perplexity": 4.478,
+    "standard_error": 0.0183,
+    "tokens_evaluated": 524032
+  },
+  "timing": {
+    "quantization_seconds": 48.7,
+    "evaluation_seconds": 526.6,
+    "tokens_per_second": 995.0
+  },
+  "environment": {
+    "torch_version": "2.8.0",
+    "device": "mps",
+    "python_version": "3.9.6"
+  },
+  "timestamp": "2026-02-21T13:37:47"
+}

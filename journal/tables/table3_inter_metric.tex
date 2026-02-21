@@ -1,0 +1,15 @@
+\begin{table}[t]
+\centering
+\caption{Inter-metric Spearman correlation matrix. Low off-diagonal values ($|\rho| < 0.7$) confirm that each metric captures distinct information about tensor sensitivity.}
+\label{tab:inter_metric}
+\begin{tabular}{lcccc}
+\toprule
+  & SVD & Kurtosis & Output Sens. & Cross-Layer \\
+\midrule
+  SVD & 1.000 & 0.381 & -0.251 & -0.311 \\
+  Kurtosis & 0.381 & 1.000 & -0.036 & -0.376 \\
+  Output Sens. & -0.251 & -0.036 & 1.000 & 0.175 \\
+  Cross-Layer & -0.311 & -0.376 & 0.175 & 1.000 \\
+\bottomrule
+\end{tabular}
+\end{table}

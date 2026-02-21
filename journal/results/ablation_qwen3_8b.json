@@ -1,0 +1,303 @@
+{
+  "model": "/Users/tk/smartquant/models/qwen3-8b-bf16",
+  "model_name": "qwen3_8b",
+  "base_manifest": "/Users/tk/smartquant/journal/analysis/qwen3_8b/manifest_base.json",
+  "perplexity_params": {
+    "sequence_length": 2048,
+    "num_samples": 256,
+    "seed": 42
+  },
+  "configs": {
+    "svd_only": {
+      "weights": {
+        "svd": 1.0,
+        "kurtosis": 0.0,
+        "output_sensitivity": 0.0,
+        "cross_layer": 0.0
+      },
+      "average_bits": 6.192661992195045,
+      "estimated_size_gb": 6.016931533813477,
+      "actual_size_gb": 6.1290873335674405,
+      "bits_distribution": {
+        "4": {
+          "params": 6190792704,
+          "percentage": 75.58286810526374
+        },
+        "8": {
+          "params": 754974720,
+          "percentage": 9.217422939666312
+        },
+        "16": {
+          "params": 1244967936,
+          "percentage": 15.199708955069937
+        }
+      },
+      "perplexity": 4.552,
+      "ppl_elapsed_seconds": 367.38888120651245
+    },
+    "kurtosis_only": {
+      "weights": {
+        "svd": 0.0,
+        "kurtosis": 1.0,
+        "output_sensitivity": 0.0,
+        "cross_layer": 0.0
+      },
+      "average_bits": 6.635098293299028,
+      "estimated_size_gb": 6.437341690063477,
+      "actual_size_gb": 6.548031659796834,
+      "bits_distribution": {
+        "4": {
+          "params": 5788139520,
+          "percentage": 70.66690920410838
+        },
+        "8": {
+          "params": 905969664,
+          "percentage": 11.060907527599573
+        },
+        "16": {
+          "params": 1496626176,
+          "percentage": 18.272183268292043
+        }
+      },
+      "perplexity": 4.565,
+      "ppl_elapsed_seconds": 351.91416692733765
+    },
+    "output_only": {
+      "weights": {
+        "svd": 0.0,
+        "kurtosis": 0.0,
+        "output_sensitivity": 1.0,
+        "cross_layer": 0.0
+      },
+      "average_bits": 16.0,
+      "estimated_size_gb": 15.256433486938477,
+      "actual_size_gb": 15.256475959904492,
+      "bits_distribution": {
+        "4": {
+          "params": 0,
+          "percentage": 0.0
+        },
+        "8": {
+          "params": 0,
+          "percentage": 0.0
+        },
+        "16": {
+          "params": 8190735360,
+          "percentage": 100.0
+        }
+      },
+      "perplexity": 4.456,
+      "ppl_elapsed_seconds": 367.81557512283325
+    },
+    "position_only": {
+      "weights": {
+        "svd": 0.0,
+        "kurtosis": 0.0,
+        "output_sensitivity": 0.0,
+        "cross_layer": 1.0
+      },
+      "average_bits": 7.954213931775718,
+      "estimated_size_gb": 7.704187393188477,
+      "actual_size_gb": 7.823905705474317,
+      "bits_distribution": {
+        "4": {
+          "params": 4127195136,
+          "percentage": 50.388578736842504
+        },
+        "8": {
+          "params": 2046820352,
+          "percentage": 24.989457747539774
+        },
+        "16": {
+          "params": 2016719872,
+          "percentage": 24.621963515617722
+        }
+      },
+      "perplexity": 4.525,
+      "ppl_elapsed_seconds": 353.0852792263031
+    },
+    "svd_kurtosis": {
+      "weights": {
+        "svd": 0.5,
+        "kurtosis": 0.5,
+        "output_sensitivity": 0.0,
+        "cross_layer": 0.0
+      },
+      "average_bits": 6.290981170218153,
+      "estimated_size_gb": 6.113611221313477,
+      "actual_size_gb": 6.22869670484215,
+      "bits_distribution": {
+        "4": {
+          "params": 5989466112,
+          "percentage": 73.12488865468607
+        },
+        "8": {
+          "params": 956301312,
+          "percentage": 11.675402390243994
+        },
+        "16": {
+          "params": 1244967936,
+          "percentage": 15.199708955069937
+        }
+      },
+      "perplexity": 4.549,
+      "ppl_elapsed_seconds": 350.8403310775757
+    },
+    "svd_output": {
+      "weights": {
+        "svd": 0.5,
+        "kurtosis": 0.0,
+        "output_sensitivity": 0.5,
+        "cross_layer": 0.0
+      },
+      "average_bits": 9.215976716405596,
+      "estimated_size_gb": 8.989831924438477,
+      "actual_size_gb": 9.19207572657615,
+      "bits_distribution": {
+        "4": {
+          "params": 0,
+          "percentage": 0.0
+        },
+        "8": {
+          "params": 6945767424,
+          "percentage": 84.80029104493006
+        },
+        "16": {
+          "params": 1244967936,
+          "percentage": 15.199708955069937
+        }
+      },
+      "perplexity": 4.464,
+      "ppl_elapsed_seconds": 352.0593500137329
+    },
+    "output_position": {
+      "weights": {
+        "svd": 0.0,
+        "kurtosis": 0.0,
+        "output_sensitivity": 0.5,
+        "cross_layer": 0.5
+      },
+      "average_bits": 10.535092354882284,
+      "estimated_size_gb": 10.208337783813477,
+      "actual_size_gb": 10.371264822781086,
+      "bits_distribution": {
+        "4": {
+          "params": 0,
+          "percentage": 0.0
+        },
+        "8": {
+          "params": 5595201536,
+          "percentage": 68.31134556397144
+        },
+        "16": {
+          "params": 2595533824,
+          "percentage": 31.688654436028564
+        }
+      },
+      "perplexity": 4.458,
+      "ppl_elapsed_seconds": 355.0673508644104
+    },
+    "kurtosis_position": {
+      "weights": {
+        "svd": 0.0,
+        "kurtosis": 0.5,
+        "output_sensitivity": 0.0,
+        "cross_layer": 0.5
+      },
+      "average_bits": 6.93005582736835,
+      "estimated_size_gb": 6.727380752563477,
+      "actual_size_gb": 6.846859742887318,
+      "bits_distribution": {
+        "4": {
+          "params": 5184159744,
+          "percentage": 63.29297085237534
+        },
+        "8": {
+          "params": 1509949440,
+          "percentage": 18.434845879332624
+        },
+        "16": {
+          "params": 1496626176,
+          "percentage": 18.272183268292043
+        }
+      },
+      "perplexity": 4.539,
+      "ppl_elapsed_seconds": 352.29900884628296
+    },
+    "composite_default": {
+      "weights": {
+        "svd": 0.3,
+        "kurtosis": 0.2,
+        "output_sensitivity": 0.3,
+        "cross_layer": 0.2
+      },
+      "average_bits": 6.839929914180502,
+      "estimated_size_gb": 6.653406143188477,
+      "actual_size_gb": 6.784849066287279,
+      "bits_distribution": {
+        "4": {
+          "params": 4865392640,
+          "percentage": 59.40117005562734
+        },
+        "8": {
+          "params": 2080374784,
+          "percentage": 25.399120989302727
+        },
+        "16": {
+          "params": 1244967936,
+          "percentage": 15.199708955069937
+        }
+      },
+      "perplexity": 4.551,
+      "ppl_elapsed_seconds": 351.1946952342987
+    },
+    "equal_weights": {
+      "weights": {
+        "svd": 0.25,
+        "kurtosis": 0.25,
+        "output_sensitivity": 0.25,
+        "cross_layer": 0.25
+      },
+      "average_bits": 6.81330180346591,
+      "estimated_size_gb": 6.627222061157227,
+      "actual_size_gb": 6.757871560752392,
+      "bits_distribution": {
+        "4": {
+          "params": 4919918592,
+          "percentage": 60.066872823492126
+        },
+        "8": {
+          "params": 2025848832,
+          "percentage": 24.733418221437933
+        },
+        "16": {
+          "params": 1244967936,
+          "percentage": 15.199708955069937
+        }
+      },
+      "perplexity": 4.546,
+      "ppl_elapsed_seconds": 351.08358216285706
+    }
+  },
+  "baselines": {
+    "bf16": {
+      "perplexity": 4.459,
+      "size_gb": 15.256476379930973,
+      "bits": 16,
+      "elapsed_seconds": 366.54521799087524
+    },
+    "uniform_4bit": {
+      "perplexity": 4.503,
+      "size_gb": 4.2913803001865745,
+      "bits": 4,
+      "elapsed_seconds": 349.7433228492737
+    },
+    "uniform_8bit": {
+      "perplexity": 4.464,
+      "size_gb": 8.10534514952451,
+      "bits": 8,
+      "elapsed_seconds": 350.8849210739136
+    }
+  },
+  "timestamp": "2026-02-21T05:56:03"
+}

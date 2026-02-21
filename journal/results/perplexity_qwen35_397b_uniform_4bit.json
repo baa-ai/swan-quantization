@@ -1,0 +1,26 @@
+{
+  "model_name": "qwen35_397b",
+  "variant": "uniform_4bit",
+  "model_info": {
+    "path": "/Users/tk/.cache/huggingface/hub/models--mlx-community--Qwen3.5-397B-A17B-4bit",
+    "size_gb": 208.4869539467618,
+    "num_shards": 46,
+    "model_type": "qwen3_5_moe",
+    "num_hidden_layers": null,
+    "hidden_size": null,
+    "vocab_size": null,
+    "quantization": {
+      "group_size": 64,
+      "bits": 4,
+      "mode": "affine"
+    }
+  },
+  "parameters": {
+    "sequence_length": 2048,
+    "num_samples": 256,
+    "seed": 42
+  },
+  "perplexity": 3.931,
+  "elapsed_seconds": 943.5122561454773,
+  "timestamp": "2026-02-21T08:10:44"
+}

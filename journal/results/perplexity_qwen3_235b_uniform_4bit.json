@@ -1,0 +1,25 @@
+{
+  "model_name": "qwen3_235b",
+  "variant": "uniform_4bit",
+  "model_info": {
+    "path": "/Users/tk/.cache/huggingface/hub/models--mlx-community--Qwen3-235B-A22B-4bit/snapshots/72b19a1fe55594225acc8b693f2ca0dedf22c849",
+    "size_gb": 123.15961308963597,
+    "num_shards": 26,
+    "model_type": "qwen3_moe",
+    "num_hidden_layers": 94,
+    "hidden_size": 4096,
+    "vocab_size": 151936,
+    "quantization": {
+      "group_size": 64,
+      "bits": 4
+    }
+  },
+  "parameters": {
+    "sequence_length": 2048,
+    "num_samples": 256,
+    "seed": 42
+  },
+  "perplexity": 3.526,
+  "elapsed_seconds": 1183.3407411575317,
+  "timestamp": "2026-02-21T06:27:42"
+}

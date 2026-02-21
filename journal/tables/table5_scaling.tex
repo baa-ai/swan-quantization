@@ -1,0 +1,14 @@
+\begin{table}[t]
+\centering
+\caption{SWAN bit allocation across model architectures. Consistent patterns: attention layers receive higher precision; middle MLP layers are more aggressively quantized.}
+\label{tab:scaling}
+\begin{tabular}{lrrrrrr}
+\toprule
+Model & Params & Tensors & 16-bit (\%) & 8-bit (\%) & 4-bit (\%) & Avg Bits \\
+\midrule
+  Qwen3-8B & 8.2B & 399 & 15.2 & 25.4 & 59.4 & 6.84 \\
+  Llama4-Maverick-17B & 401.6B & 1061 & 0.7 & 17.3 & 81.9 & 4.78 \\
+  Qwen3.5-397B & 403.4B & 2924 & 0.5 & 25.0 & 74.5 & 5.06 \\
+\bottomrule
+\end{tabular}
+\end{table}

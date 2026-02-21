@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Virtual environments
+venv/
+env/
+smartquant-env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Large model files
+models/
+*.safetensors
+*.bin
+*.gguf
+
+# Generated analysis outputs
+analysis/
+logs/
+
+# Temporary files
+*.tmp
+*.bak
+.pytest_cache/

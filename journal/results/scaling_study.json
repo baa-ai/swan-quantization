@@ -1,0 +1,2681 @@
+{
+  "study": "SWAN Scaling Study",
+  "description": "Cross-model comparison of SWAN sensitivity-driven quantization",
+  "models": {
+    "qwen3_8b": {
+      "label": "Qwen3-8B (Dense)",
+      "param_scale": "8B",
+      "architecture": "dense",
+      "manifest_path": "/Users/tk/smartquant/journal/analysis/qwen3_8b/manifest_base.json",
+      "total_params": 8190735360,
+      "total_tensors": 399,
+      "total_layers": 36,
+      "estimated_size_gb": 6.65,
+      "average_bits": 6.8399,
+      "bits_distribution": {
+        "4": {
+          "params": 4865392640,
+          "percentage": 59.40117005562734
+        },
+        "8": {
+          "params": 2080374784,
+          "percentage": 25.399120989302727
+        },
+        "16": {
+          "params": 1244967936,
+          "percentage": 15.199708955069937
+        }
+      },
+      "score_distributions": {
+        "cross_layer": {
+          "count": 399,
+          "mean": 0.227325,
+          "std": 0.306571,
+          "median": 0.04,
+          "p25": 0.0,
+          "p75": 0.431837,
+          "min": 0.0,
+          "max": 1.0
+        },
+        "kurtosis": {
+          "count": 399,
+          "mean": 0.083157,
+          "std": 0.137539,
+          "median": 0.046032,
+          "p25": 0.0,
+          "p75": 0.111129,
+          "min": 0.0,
+          "max": 1.0
+        },
+        "output_sensitivity": {
+          "count": 399,
+          "mean": 0.636591,
+          "std": 0.480981,
+          "median": 1.0,
+          "p25": 0.0,
+          "p75": 1.0,
+          "min": 0.0,
+          "max": 1.0
+        },
+        "svd": {
+          "count": 399,
+          "mean": 0.002709,
+          "std": 0.022461,
+          "median": 0.0,
+          "p25": 0.0,
+          "p75": 0.0,
+          "min": 0.0,
+          "max": 0.280705
+        },
+        "composite_score": {
+          "count": 399,
+          "mean": 0.253887,
+          "std": 0.201422,
+          "median": 0.334996,
+          "p25": 0.0,
+          "p75": 0.401937,
+          "min": 0.0,
+          "max": 0.713213
+        }
+      },
+      "tensor_type_breakdown": {
+        "attention": {
+          "total_count": 144,
+          "total_params": 1509949440,
+          "average_bits": 6.4444,
+          "score_stats": {
+            "count": 144,
+            "mean": 0.398134,
+            "std": 0.064547,
+            "median": 0.377412,
+            "p25": 0.346567,
+            "p75": 0.445582,
+            "min": 0.307566,
+            "max": 0.589943
+          },
+          "bit_distribution": {
+            "4": {
+              "count": 56,
+              "params": 587202560,
+              "pct_params": 38.89,
+              "pct_count": 38.89
+            },
+            "8": {
+              "count": 88,
+              "params": 922746880,
+              "pct_params": 61.11,
+              "pct_count": 61.11
+            }
+          }
+        },
+        "embedding": {
+          "total_count": 2,
+          "total_params": 1244659712,
+          "average_bits": 16.0,
+          "score_stats": {
+            "count": 2,
+            "mean": 0.452435,
+            "std": 0.037184,
+            "median": 0.452435,
+            "p25": 0.415251,
+            "p75": 0.489619,
+            "min": 0.415251,
+            "max": 0.489619
+          },
+          "bit_distribution": {
+            "16": {
+              "count": 2,
+              "params": 1244659712,
+              "pct_params": 100.0,
+              "pct_count": 100.0
+            }
+          }
+        },
+        "mlp": {
+          "total_count": 108,
+          "total_params": 5435817984,
+          "average_bits": 4.8519,
+          "score_stats": {
+            "count": 108,
+            "mean": 0.398747,
+            "std": 0.091147,
+            "median": 0.363676,
+            "p25": 0.332986,
+            "p75": 0.440766,
+            "min": 0.308718,
+            "max": 0.713213
+          },
+          "bit_distribution": {
+            "4": {
+              "count": 85,
+              "params": 4278190080,
+              "pct_params": 78.7,
+              "pct_count": 78.7
+            },
+            "8": {
+              "count": 23,
+              "params": 1157627904,
+              "pct_params": 21.3,
+              "pct_count": 21.3
+            }
+          }
+        },
+        "norm": {
+          "total_count": 145,
+          "total_params": 308224,
+          "average_bits": 16.0,
+          "score_stats": {
+            "count": 145,
+            "mean": 0.0,
+            "std": 0.0,
+            "median": 0.0,
+            "p25": 0.0,
+            "p75": 0.0,
+            "min": 0.0,
+            "max": 0.0
+          },
+          "bit_distribution": {
+            "16": {
+              "count": 145,
+              "params": 308224,
+              "pct_params": 100.0,
+              "pct_count": 100.0
+            }
+          }
+        }
+      },
+      "layer_summary": {
+        "0": {
+          "tensor_count": 11,
+          "avg_composite_score": 0.337019,
+          "avg_bits": 10.9091,
+          "bit_counts": {
+            "16": 4,
+            "8": 7
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "1": {
+          "tensor_count": 11,
+          "avg_composite_score": 0.349413,
+          "avg_bits": 10.9091,
+          "bit_counts": {
+            "16": 4,
+            "8": 7
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "2": {
+          "tensor_count": 11,
+          "avg_composite_score": 0.354171,
+          "avg_bits": 10.9091,
+          "bit_counts": {
+            "16": 4,
+            "8": 7
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "3": {
+          "tensor_count": 11,
+          "avg_composite_score": 0.319343,
+          "avg_bits": 10.9091,
+          "bit_counts": {
+            "16": 4,
+            "8": 7
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "4": {
+          "tensor_count": 11,
+          "avg_composite_score": 0.281455,
+          "avg_bits": 9.4545,
+          "bit_counts": {
+            "16": 4,
+            "8": 3,
+            "4": 4
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "5": {
+          "tensor_count": 11,
+          "avg_composite_score": 0.27054,
+          "avg_bits": 9.0909,
+          "bit_counts": {
+            "16": 4,
+            "4": 5,
+            "8": 2
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "6": {
+          "tensor_count": 11,
+          "avg_composite_score": 0.270306,
+          "avg_bits": 9.8182,
+          "bit_counts": {
+            "16": 4,
+            "4": 3,
+            "8": 4
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "7": {
+          "tensor_count": 11,
+          "avg_composite_score": 0.249746,
+          "avg_bits": 9.0909,
+          "bit_counts": {
+            "8": 2,
+            "4": 5,
+            "16": 4
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "8": {
+          "tensor_count": 11,
+          "avg_composite_score": 0.235553,
+          "avg_bits": 9.0909,
+          "bit_counts": {
+            "16": 4,
+            "4": 5,
+            "8": 2
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "9": {
+          "tensor_count": 11,
+          "avg_composite_score": 0.237577,
+          "avg_bits": 9.0909,
+          "bit_counts": {
+            "16": 4,
+            "4": 5,
+            "8": 2
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "10": {
+          "tensor_count": 11,
+          "avg_composite_score": 0.225238,
+          "avg_bits": 9.0909,
+          "bit_counts": {
+            "16": 4,
+            "4": 5,
+            "8": 2
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "11": {
+          "tensor_count": 11,
+          "avg_composite_score": 0.2205,
+          "avg_bits": 9.0909,
+          "bit_counts": {
+            "16": 4,
+            "4": 5,
+            "8": 2
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "12": {
+          "tensor_count": 11,
+          "avg_composite_score": 0.220672,
+          "avg_bits": 9.0909,
+          "bit_counts": {
+            "16": 4,
+            "4": 5,
+            "8": 2
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "13": {
+          "tensor_count": 11,
+          "avg_composite_score": 0.213834,
+          "avg_bits": 9.0909,
+          "bit_counts": {
+            "16": 4,
+            "4": 5,
+            "8": 2
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "14": {
+          "tensor_count": 11,
+          "avg_composite_score": 0.207989,
+          "avg_bits": 9.0909,
+          "bit_counts": {
+            "16": 4,
+            "4": 5,
+            "8": 2
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "15": {
+          "tensor_count": 11,
+          "avg_composite_score": 0.207478,
+          "avg_bits": 9.0909,
+          "bit_counts": {
+            "16": 4,
+            "4": 5,
+            "8": 2
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "16": {
+          "tensor_count": 11,
+          "avg_composite_score": 0.211712,
+          "avg_bits": 9.0909,
+          "bit_counts": {
+            "16": 4,
+            "4": 5,
+            "8": 2
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "17": {
+          "tensor_count": 11,
+          "avg_composite_score": 0.20611,
+          "avg_bits": 9.0909,
+          "bit_counts": {
+            "4": 5,
+            "16": 4,
+            "8": 2
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "18": {
+          "tensor_count": 11,
+          "avg_composite_score": 0.205074,
+          "avg_bits": 9.0909,
+          "bit_counts": {
+            "16": 4,
+            "4": 5,
+            "8": 2
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "19": {
+          "tensor_count": 11,
+          "avg_composite_score": 0.219648,
+          "avg_bits": 9.0909,
+          "bit_counts": {
+            "16": 4,
+            "4": 5,
+            "8": 2
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "20": {
+          "tensor_count": 11,
+          "avg_composite_score": 0.208673,
+          "avg_bits": 9.0909,
+          "bit_counts": {
+            "16": 4,
+            "4": 5,
+            "8": 2
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "21": {
+          "tensor_count": 11,
+          "avg_composite_score": 0.211586,
+          "avg_bits": 9.0909,
+          "bit_counts": {
+            "16": 4,
+            "4": 5,
+            "8": 2
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "22": {
+          "tensor_count": 11,
+          "avg_composite_score": 0.22534,
+          "avg_bits": 9.0909,
+          "bit_counts": {
+            "16": 4,
+            "4": 5,
+            "8": 2
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "23": {
+          "tensor_count": 11,
+          "avg_composite_score": 0.218764,
+          "avg_bits": 9.0909,
+          "bit_counts": {
+            "16": 4,
+            "4": 5,
+            "8": 2
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "24": {
+          "tensor_count": 11,
+          "avg_composite_score": 0.224438,
+          "avg_bits": 9.0909,
+          "bit_counts": {
+            "16": 4,
+            "4": 5,
+            "8": 2
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "25": {
+          "tensor_count": 11,
+          "avg_composite_score": 0.222665,
+          "avg_bits": 9.0909,
+          "bit_counts": {
+            "16": 4,
+            "4": 5,
+            "8": 2
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "26": {
+          "tensor_count": 11,
+          "avg_composite_score": 0.229368,
+          "avg_bits": 9.0909,
+          "bit_counts": {
+            "16": 4,
+            "4": 5,
+            "8": 2
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "27": {
+          "tensor_count": 11,
+          "avg_composite_score": 0.236885,
+          "avg_bits": 9.0909,
+          "bit_counts": {
+            "4": 5,
+            "16": 4,
+            "8": 2
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "28": {
+          "tensor_count": 11,
+          "avg_composite_score": 0.246924,
+          "avg_bits": 9.0909,
+          "bit_counts": {
+            "16": 4,
+            "4": 5,
+            "8": 2
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "29": {
+          "tensor_count": 11,
+          "avg_composite_score": 0.255935,
+          "avg_bits": 9.0909,
+          "bit_counts": {
+            "16": 4,
+            "4": 5,
+            "8": 2
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "30": {
+          "tensor_count": 11,
+          "avg_composite_score": 0.265655,
+          "avg_bits": 9.0909,
+          "bit_counts": {
+            "16": 4,
+            "4": 5,
+            "8": 2
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "31": {
+          "tensor_count": 11,
+          "avg_composite_score": 0.275469,
+          "avg_bits": 9.0909,
+          "bit_counts": {
+            "16": 4,
+            "4": 5,
+            "8": 2
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "32": {
+          "tensor_count": 11,
+          "avg_composite_score": 0.288867,
+          "avg_bits": 9.4545,
+          "bit_counts": {
+            "16": 4,
+            "4": 4,
+            "8": 3
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "33": {
+          "tensor_count": 11,
+          "avg_composite_score": 0.301941,
+          "avg_bits": 10.9091,
+          "bit_counts": {
+            "16": 4,
+            "8": 7
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "34": {
+          "tensor_count": 11,
+          "avg_composite_score": 0.322049,
+          "avg_bits": 10.9091,
+          "bit_counts": {
+            "16": 4,
+            "8": 7
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "35": {
+          "tensor_count": 11,
+          "avg_composite_score": 0.348967,
+          "avg_bits": 10.9091,
+          "bit_counts": {
+            "16": 4,
+            "8": 7
+          },
+          "has_8plus_bit_tensors": true
+        }
+      },
+      "layers_with_8plus_bits": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35
+      ],
+      "num_layers_with_8plus": 36,
+      "pct_layers_with_8plus": 100.0
+    },
+    "maverick": {
+      "label": "Llama4-Maverick-17B-128E (MoE)",
+      "param_scale": "400B",
+      "architecture": "moe_128e",
+      "manifest_path": "/Users/tk/smartquant/analysis/manifest.json",
+      "total_params": 401583781376,
+      "total_tensors": 1061,
+      "total_layers": 48,
+      "estimated_size_gb": 230.4,
+      "average_bits": 4.7825,
+      "bits_distribution": {
+        "4": {
+          "params": 329011691520,
+          "percentage": 81.92853067737532
+        },
+        "8": {
+          "params": 69578260480,
+          "percentage": 17.325963773137136
+        },
+        "16": {
+          "params": 2993829376,
+          "percentage": 0.7455055494875424
+        }
+      },
+      "score_distributions": {
+        "cross_layer": {
+          "count": 1061,
+          "mean": 0.189459,
+          "std": 0.28654,
+          "median": 0.022182,
+          "p25": 0.0,
+          "p75": 0.282933,
+          "min": 0.0,
+          "max": 1.0
+        },
+        "kurtosis": {
+          "count": 1061,
+          "mean": 0.095855,
+          "std": 0.213131,
+          "median": 0.012059,
+          "p25": 0.0,
+          "p75": 0.083874,
+          "min": 0.0,
+          "max": 1.0
+        },
+        "output_sensitivity": {
+          "count": 1061,
+          "mean": 0.583412,
+          "std": 0.492993,
+          "median": 1.0,
+          "p25": 0.0,
+          "p75": 1.0,
+          "min": 0.0,
+          "max": 1.0
+        },
+        "svd": {
+          "count": 1061,
+          "mean": 0.026588,
+          "std": 0.093811,
+          "median": 0.0,
+          "p25": 0.0,
+          "p75": 0.0,
+          "min": 0.0,
+          "max": 1.0
+        },
+        "composite_score": {
+          "count": 1061,
+          "mean": 0.240063,
+          "std": 0.219074,
+          "median": 0.316652,
+          "p25": 0.0,
+          "p75": 0.396796,
+          "min": 0.0,
+          "max": 0.96
+        }
+      },
+      "tensor_type_breakdown": {
+        "attention": {
+          "total_count": 192,
+          "total_params": 3019898880,
+          "average_bits": 7.1389,
+          "score_stats": {
+            "count": 192,
+            "mean": 0.421792,
+            "std": 0.11313,
+            "median": 0.390558,
+            "p25": 0.334268,
+            "p75": 0.48071,
+            "min": 0.306422,
+            "max": 0.96
+          },
+          "bit_distribution": {
+            "4": {
+              "count": 58,
+              "params": 723517440,
+              "pct_params": 23.96,
+              "pct_count": 30.21
+            },
+            "8": {
+              "count": 131,
+              "params": 2259681280,
+              "pct_params": 74.83,
+              "pct_count": 68.23
+            },
+            "16": {
+              "count": 3,
+              "params": 36700160,
+              "pct_params": 1.22,
+              "pct_count": 1.56
+            }
+          }
+        },
+        "embedding": {
+          "total_count": 3,
+          "total_params": 2069799424,
+          "average_bits": 16.0,
+          "score_stats": {
+            "count": 3,
+            "mean": 0.447296,
+            "std": 0.031661,
+            "median": 0.464821,
+            "p25": 0.40285,
+            "p75": 0.474217,
+            "min": 0.40285,
+            "max": 0.474217
+          },
+          "bit_distribution": {
+            "16": {
+              "count": 3,
+              "params": 2069799424,
+              "pct_params": 100.0,
+              "pct_count": 100.0
+            }
+          }
+        },
+        "mlp": {
+          "total_count": 72,
+          "total_params": 6039797760,
+          "average_bits": 4.9444,
+          "score_stats": {
+            "count": 72,
+            "mean": 0.393859,
+            "std": 0.075388,
+            "median": 0.369093,
+            "p25": 0.336802,
+            "p75": 0.443015,
+            "min": 0.30839,
+            "max": 0.622388
+          },
+          "bit_distribution": {
+            "4": {
+              "count": 55,
+              "params": 4613734400,
+              "pct_params": 76.39,
+              "pct_count": 76.39
+            },
+            "8": {
+              "count": 17,
+              "params": 1426063360,
+              "pct_params": 23.61,
+              "pct_count": 23.61
+            }
+          }
+        },
+        "mlp_expert": {
+          "total_count": 48,
+          "total_params": 386547056640,
+          "average_bits": 4.6667,
+          "score_stats": {
+            "count": 48,
+            "mean": 0.371672,
+            "std": 0.064746,
+            "median": 0.352997,
+            "p25": 0.315698,
+            "p75": 0.424231,
+            "min": 0.300518,
+            "max": 0.523814
+          },
+          "bit_distribution": {
+            "4": {
+              "count": 40,
+              "params": 322122547200,
+              "pct_params": 83.33,
+              "pct_count": 83.33
+            },
+            "8": {
+              "count": 8,
+              "params": 64424509440,
+              "pct_params": 16.67,
+              "pct_count": 16.67
+            }
+          }
+        },
+        "mlp_shared_expert": {
+          "total_count": 72,
+          "total_params": 3019898880,
+          "average_bits": 5.9444,
+          "score_stats": {
+            "count": 72,
+            "mean": 0.453165,
+            "std": 0.102408,
+            "median": 0.432783,
+            "p25": 0.371537,
+            "p75": 0.507853,
+            "min": 0.317906,
+            "max": 0.806418
+          },
+          "bit_distribution": {
+            "4": {
+              "count": 37,
+              "params": 1551892480,
+              "pct_params": 51.39,
+              "pct_count": 51.39
+            },
+            "8": {
+              "count": 35,
+              "params": 1468006400,
+              "pct_params": 48.61,
+              "pct_count": 48.61
+            }
+          }
+        },
+        "norm": {
+          "total_count": 237,
+          "total_params": 693760,
+          "average_bits": 16.0,
+          "score_stats": {
+            "count": 237,
+            "mean": 0.0,
+            "std": 0.0,
+            "median": 0.0,
+            "p25": 0.0,
+            "p75": 0.0,
+            "min": 0.0,
+            "max": 0.0
+          },
+          "bit_distribution": {
+            "16": {
+              "count": 237,
+              "params": 693760,
+              "pct_params": 100.0,
+              "pct_count": 100.0
+            }
+          }
+        },
+        "router": {
+          "total_count": 24,
+          "total_params": 15728640,
+          "average_bits": 16.0,
+          "score_stats": {
+            "count": 24,
+            "mean": 0.57933,
+            "std": 0.078673,
+            "median": 0.603445,
+            "p25": 0.512508,
+            "p75": 0.642433,
+            "min": 0.445791,
+            "max": 0.716971
+          },
+          "bit_distribution": {
+            "16": {
+              "count": 24,
+              "params": 15728640,
+              "pct_params": 100.0,
+              "pct_count": 100.0
+            }
+          }
+        },
+        "vision": {
+          "total_count": 413,
+          "total_params": 870907392,
+          "average_bits": 16.0,
+          "score_stats": {
+            "count": 413,
+            "mean": 0.192858,
+            "std": 0.204854,
+            "median": 0.300708,
+            "p25": 0.0,
+            "p75": 0.341643,
+            "min": 0.0,
+            "max": 0.884299
+          },
+          "bit_distribution": {
+            "16": {
+              "count": 413,
+              "params": 870907392,
+              "pct_params": 100.0,
+              "pct_count": 100.0
+            }
+          }
+        }
+      },
+      "layer_summary": {
+        "0": {
+          "tensor_count": 25,
+          "avg_composite_score": 0.358166,
+          "avg_bits": 14.08,
+          "bit_counts": {
+            "8": 6,
+            "16": 19
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "1": {
+          "tensor_count": 28,
+          "avg_composite_score": 0.314909,
+          "avg_bits": 13.4286,
+          "bit_counts": {
+            "8": 9,
+            "16": 19
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "2": {
+          "tensor_count": 25,
+          "avg_composite_score": 0.269607,
+          "avg_bits": 13.76,
+          "bit_counts": {
+            "8": 7,
+            "16": 18
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "3": {
+          "tensor_count": 28,
+          "avg_composite_score": 0.316727,
+          "avg_bits": 14,
+          "bit_counts": {
+            "16": 21,
+            "8": 7
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "4": {
+          "tensor_count": 25,
+          "avg_composite_score": 0.253283,
+          "avg_bits": 13.76,
+          "bit_counts": {
+            "16": 18,
+            "8": 7
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "5": {
+          "tensor_count": 28,
+          "avg_composite_score": 0.255642,
+          "avg_bits": 12.4286,
+          "bit_counts": {
+            "16": 19,
+            "4": 7,
+            "8": 2
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "6": {
+          "tensor_count": 25,
+          "avg_composite_score": 0.22169,
+          "avg_bits": 12.96,
+          "bit_counts": {
+            "16": 18,
+            "4": 5,
+            "8": 2
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "7": {
+          "tensor_count": 28,
+          "avg_composite_score": 0.24587,
+          "avg_bits": 12.4286,
+          "bit_counts": {
+            "16": 19,
+            "4": 7,
+            "8": 2
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "8": {
+          "tensor_count": 25,
+          "avg_composite_score": 0.208576,
+          "avg_bits": 12.96,
+          "bit_counts": {
+            "16": 18,
+            "4": 5,
+            "8": 2
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "9": {
+          "tensor_count": 28,
+          "avg_composite_score": 0.22504,
+          "avg_bits": 12.4286,
+          "bit_counts": {
+            "16": 19,
+            "4": 7,
+            "8": 2
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "10": {
+          "tensor_count": 25,
+          "avg_composite_score": 0.197342,
+          "avg_bits": 12.96,
+          "bit_counts": {
+            "16": 18,
+            "4": 5,
+            "8": 2
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "11": {
+          "tensor_count": 28,
+          "avg_composite_score": 0.216101,
+          "avg_bits": 12.4286,
+          "bit_counts": {
+            "16": 19,
+            "4": 7,
+            "8": 2
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "12": {
+          "tensor_count": 25,
+          "avg_composite_score": 0.187563,
+          "avg_bits": 12.96,
+          "bit_counts": {
+            "16": 18,
+            "8": 2,
+            "4": 5
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "13": {
+          "tensor_count": 28,
+          "avg_composite_score": 0.205507,
+          "avg_bits": 12.4286,
+          "bit_counts": {
+            "16": 19,
+            "4": 7,
+            "8": 2
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "14": {
+          "tensor_count": 25,
+          "avg_composite_score": 0.180082,
+          "avg_bits": 12.96,
+          "bit_counts": {
+            "16": 18,
+            "4": 5,
+            "8": 2
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "15": {
+          "tensor_count": 28,
+          "avg_composite_score": 0.206957,
+          "avg_bits": 12.5714,
+          "bit_counts": {
+            "16": 19,
+            "4": 6,
+            "8": 3
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "16": {
+          "tensor_count": 25,
+          "avg_composite_score": 0.173656,
+          "avg_bits": 12.96,
+          "bit_counts": {
+            "16": 18,
+            "4": 5,
+            "8": 2
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "17": {
+          "tensor_count": 28,
+          "avg_composite_score": 0.195481,
+          "avg_bits": 12.4286,
+          "bit_counts": {
+            "16": 19,
+            "4": 7,
+            "8": 2
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "18": {
+          "tensor_count": 25,
+          "avg_composite_score": 0.168719,
+          "avg_bits": 12.96,
+          "bit_counts": {
+            "16": 18,
+            "4": 5,
+            "8": 2
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "19": {
+          "tensor_count": 28,
+          "avg_composite_score": 0.196322,
+          "avg_bits": 12.5714,
+          "bit_counts": {
+            "16": 19,
+            "4": 6,
+            "8": 3
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "20": {
+          "tensor_count": 25,
+          "avg_composite_score": 0.165787,
+          "avg_bits": 12.96,
+          "bit_counts": {
+            "16": 18,
+            "4": 5,
+            "8": 2
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "21": {
+          "tensor_count": 28,
+          "avg_composite_score": 0.193692,
+          "avg_bits": 12.4286,
+          "bit_counts": {
+            "16": 19,
+            "4": 7,
+            "8": 2
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "22": {
+          "tensor_count": 25,
+          "avg_composite_score": 0.163175,
+          "avg_bits": 12.96,
+          "bit_counts": {
+            "16": 18,
+            "4": 5,
+            "8": 2
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "23": {
+          "tensor_count": 28,
+          "avg_composite_score": 0.20399,
+          "avg_bits": 12.7143,
+          "bit_counts": {
+            "16": 19,
+            "4": 5,
+            "8": 4
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "24": {
+          "tensor_count": 25,
+          "avg_composite_score": 0.165512,
+          "avg_bits": 12.96,
+          "bit_counts": {
+            "16": 18,
+            "4": 5,
+            "8": 2
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "25": {
+          "tensor_count": 28,
+          "avg_composite_score": 0.204678,
+          "avg_bits": 12.8571,
+          "bit_counts": {
+            "16": 19,
+            "4": 4,
+            "8": 5
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "26": {
+          "tensor_count": 25,
+          "avg_composite_score": 0.170612,
+          "avg_bits": 12.96,
+          "bit_counts": {
+            "16": 18,
+            "4": 5,
+            "8": 2
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "27": {
+          "tensor_count": 28,
+          "avg_composite_score": 0.209715,
+          "avg_bits": 12.8571,
+          "bit_counts": {
+            "16": 19,
+            "4": 4,
+            "8": 5
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "28": {
+          "tensor_count": 25,
+          "avg_composite_score": 0.171601,
+          "avg_bits": 12.96,
+          "bit_counts": {
+            "16": 18,
+            "4": 5,
+            "8": 2
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "29": {
+          "tensor_count": 28,
+          "avg_composite_score": 0.212369,
+          "avg_bits": 12.8571,
+          "bit_counts": {
+            "16": 19,
+            "4": 4,
+            "8": 5
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "30": {
+          "tensor_count": 25,
+          "avg_composite_score": 0.178281,
+          "avg_bits": 13.12,
+          "bit_counts": {
+            "16": 18,
+            "4": 4,
+            "8": 3
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "31": {
+          "tensor_count": 28,
+          "avg_composite_score": 0.222542,
+          "avg_bits": 12.8571,
+          "bit_counts": {
+            "16": 19,
+            "4": 4,
+            "8": 5
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "32": {
+          "tensor_count": 25,
+          "avg_composite_score": 0.183109,
+          "avg_bits": 12.96,
+          "bit_counts": {
+            "16": 18,
+            "4": 5,
+            "8": 2
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "33": {
+          "tensor_count": 28,
+          "avg_composite_score": 0.231959,
+          "avg_bits": 12.8571,
+          "bit_counts": {
+            "16": 19,
+            "4": 4,
+            "8": 5
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "34": {
+          "tensor_count": 9,
+          "avg_composite_score": 0.296222,
+          "avg_bits": 8,
+          "bit_counts": {
+            "4": 4,
+            "16": 2,
+            "8": 3
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "35": {
+          "tensor_count": 12,
+          "avg_composite_score": 0.363352,
+          "avg_bits": 8.6667,
+          "bit_counts": {
+            "4": 4,
+            "16": 3,
+            "8": 5
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "36": {
+          "tensor_count": 9,
+          "avg_composite_score": 0.304564,
+          "avg_bits": 8,
+          "bit_counts": {
+            "4": 4,
+            "16": 2,
+            "8": 3
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "37": {
+          "tensor_count": 12,
+          "avg_composite_score": 0.377964,
+          "avg_bits": 8.6667,
+          "bit_counts": {
+            "4": 4,
+            "16": 3,
+            "8": 5
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "38": {
+          "tensor_count": 9,
+          "avg_composite_score": 0.322994,
+          "avg_bits": 8,
+          "bit_counts": {
+            "4": 4,
+            "16": 2,
+            "8": 3
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "39": {
+          "tensor_count": 12,
+          "avg_composite_score": 0.39605,
+          "avg_bits": 8.6667,
+          "bit_counts": {
+            "4": 4,
+            "16": 3,
+            "8": 5
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "40": {
+          "tensor_count": 9,
+          "avg_composite_score": 0.341714,
+          "avg_bits": 8,
+          "bit_counts": {
+            "4": 4,
+            "16": 2,
+            "8": 3
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "41": {
+          "tensor_count": 12,
+          "avg_composite_score": 0.420553,
+          "avg_bits": 9,
+          "bit_counts": {
+            "4": 3,
+            "16": 3,
+            "8": 6
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "42": {
+          "tensor_count": 9,
+          "avg_composite_score": 0.358874,
+          "avg_bits": 8.8889,
+          "bit_counts": {
+            "8": 5,
+            "4": 2,
+            "16": 2
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "43": {
+          "tensor_count": 12,
+          "avg_composite_score": 0.43398,
+          "avg_bits": 9.3333,
+          "bit_counts": {
+            "4": 2,
+            "16": 3,
+            "8": 7
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "44": {
+          "tensor_count": 9,
+          "avg_composite_score": 0.397361,
+          "avg_bits": 9.7778,
+          "bit_counts": {
+            "8": 7,
+            "16": 2
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "45": {
+          "tensor_count": 12,
+          "avg_composite_score": 0.447648,
+          "avg_bits": 10,
+          "bit_counts": {
+            "8": 9,
+            "16": 3
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "46": {
+          "tensor_count": 9,
+          "avg_composite_score": 0.434057,
+          "avg_bits": 9.7778,
+          "bit_counts": {
+            "8": 7,
+            "16": 2
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "47": {
+          "tensor_count": 12,
+          "avg_composite_score": 0.55853,
+          "avg_bits": 10,
+          "bit_counts": {
+            "8": 9,
+            "16": 3
+          },
+          "has_8plus_bit_tensors": true
+        }
+      },
+      "layers_with_8plus_bits": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47
+      ],
+      "num_layers_with_8plus": 48,
+      "pct_layers_with_8plus": 100.0
+    },
+    "qwen35_397b": {
+      "label": "Qwen3.5-397B-A17B-512E (MoE)",
+      "param_scale": "400B",
+      "architecture": "moe_512e",
+      "manifest_path": "/Users/tk/smartquant/analysis/qwen35-397b/smartquant_manifest.json",
+      "total_params": 403397928944,
+      "total_tensors": 2924,
+      "total_layers": 60,
+      "estimated_size_gb": 245.08,
+      "average_bits": 5.0631,
+      "bits_distribution": {
+        "4": {
+          "params": 300343578624,
+          "percentage": 74.45342602780045
+        },
+        "8": {
+          "params": 100976222208,
+          "percentage": 25.031418101806267
+        },
+        "16": {
+          "params": 2078128112,
+          "percentage": 0.5151558703932978
+        }
+      },
+      "score_distributions": {
+        "cross_layer": {
+          "count": 2924,
+          "mean": 0.629692,
+          "std": 0.439068,
+          "median": 1.0,
+          "p25": 0.048549,
+          "p75": 1.0,
+          "min": 0.0,
+          "max": 1.0
+        },
+        "kurtosis": {
+          "count": 2924,
+          "mean": 0.199802,
+          "std": 0.321005,
+          "median": 0.026041,
+          "p25": 0.004939,
+          "p75": 0.232728,
+          "min": 0.0,
+          "max": 1.0
+        },
+        "output_sensitivity": {
+          "count": 2924,
+          "mean": 0.8003,
+          "std": 0.397177,
+          "median": 1.0,
+          "p25": 1.0,
+          "p75": 1.0,
+          "min": 0.0,
+          "max": 1.0
+        },
+        "svd": {
+          "count": 2924,
+          "mean": 0.056795,
+          "std": 0.174127,
+          "median": 0.0,
+          "p25": 0.0,
+          "p75": 0.0,
+          "min": 0.0,
+          "max": 1.0
+        },
+        "composite_score": {
+          "count": 2924,
+          "mean": 0.423027,
+          "std": 0.2283,
+          "median": 0.502281,
+          "p25": 0.376169,
+          "p75": 0.535227,
+          "min": 0.0,
+          "max": 0.97071
+        }
+      },
+      "tensor_type_breakdown": {
+        "attention": {
+          "total_count": 60,
+          "total_params": 1572864000,
+          "average_bits": 7.344,
+          "score_stats": {
+            "count": 60,
+            "mean": 0.430861,
+            "std": 0.094432,
+            "median": 0.404188,
+            "p25": 0.351757,
+            "p75": 0.495181,
+            "min": 0.30746,
+            "max": 0.654347
+          },
+          "bit_distribution": {
+            "4": {
+              "count": 18,
+              "params": 257949696,
+              "pct_params": 16.4,
+              "pct_count": 30.0
+            },
+            "8": {
+              "count": 42,
+              "params": 1314914304,
+              "pct_params": 83.6,
+              "pct_count": 70.0
+            }
+          }
+        },
+        "embedding": {
+          "total_count": 4,
+          "total_params": 2036008064,
+          "average_bits": 15.993,
+          "score_stats": {
+            "count": 4,
+            "mean": 0.332656,
+            "std": 0.193425,
+            "median": 0.428076,
+            "p25": 0.40976,
+            "p75": 0.474471,
+            "min": 0.0,
+            "max": 0.474471
+          },
+          "bit_distribution": {
+            "8": {
+              "count": 1,
+              "params": 1769472,
+              "pct_params": 0.09,
+              "pct_count": 25.0
+            },
+            "16": {
+              "count": 3,
+              "params": 2034238592,
+              "pct_params": 99.91,
+              "pct_count": 75.0
+            }
+          }
+        },
+        "linear_attention": {
+          "total_count": 360,
+          "total_params": 5310633600,
+          "average_bits": 5.5576,
+          "score_stats": {
+            "count": 360,
+            "mean": 0.365519,
+            "std": 0.235896,
+            "median": 0.426477,
+            "p25": 0.309996,
+            "p75": 0.524571,
+            "min": 0.0,
+            "max": 0.97071
+          },
+          "bit_distribution": {
+            "4": {
+              "count": 105,
+              "params": 3243114496,
+              "pct_params": 61.07,
+              "pct_count": 29.17
+            },
+            "8": {
+              "count": 161,
+              "params": 2067316736,
+              "pct_params": 38.93,
+              "pct_count": 44.72
+            },
+            "16": {
+              "count": 94,
+              "params": 202368,
+              "pct_params": 0.0,
+              "pct_count": 26.11
+            }
+          }
+        },
+        "mlp_expert": {
+          "total_count": 120,
+          "total_params": 386547056640,
+          "average_bits": 4.9333,
+          "score_stats": {
+            "count": 120,
+            "mean": 0.39663,
+            "std": 0.095055,
+            "median": 0.374405,
+            "p25": 0.317734,
+            "p75": 0.441803,
+            "min": 0.30155,
+            "max": 0.7
+          },
+          "bit_distribution": {
+            "4": {
+              "count": 92,
+              "params": 296352743424,
+              "pct_params": 76.67,
+              "pct_count": 76.67
+            },
+            "8": {
+              "count": 28,
+              "params": 90194313216,
+              "pct_params": 23.33,
+              "pct_count": 23.33
+            }
+          }
+        },
+        "mlp_shared_expert": {
+          "total_count": 180,
+          "total_params": 754974720,
+          "average_bits": 7.2889,
+          "score_stats": {
+            "count": 180,
+            "mean": 0.548464,
+            "std": 0.112975,
+            "median": 0.551564,
+            "p25": 0.493632,
+            "p75": 0.623525,
+            "min": 0.307155,
+            "max": 0.8014
+          },
+          "bit_distribution": {
+            "4": {
+              "count": 32,
+              "params": 134217728,
+              "pct_params": 17.78,
+              "pct_count": 17.78
+            },
+            "8": {
+              "count": 148,
+              "params": 620756992,
+              "pct_params": 82.22,
+              "pct_count": 82.22
+            }
+          }
+        },
+        "mtp": {
+          "total_count": 1545,
+          "total_params": 6593449984,
+          "average_bits": 8.0051,
+          "score_stats": {
+            "count": 1545,
+            "mean": 0.538899,
+            "std": 0.064028,
+            "median": 0.508046,
+            "p25": 0.502045,
+            "p75": 0.545314,
+            "min": 0.0,
+            "max": 0.850407
+          },
+          "bit_distribution": {
+            "8": {
+              "count": 1543,
+              "params": 6589251584,
+              "pct_params": 99.94,
+              "pct_count": 99.87
+            },
+            "16": {
+              "count": 2,
+              "params": 4198400,
+              "pct_params": 0.06,
+              "pct_count": 0.13
+            }
+          }
+        },
+        "norm": {
+          "total_count": 313,
+          "total_params": 656768,
+          "average_bits": 16.0,
+          "score_stats": {
+            "count": 313,
+            "mean": 0.0,
+            "std": 0.0,
+            "median": 0.0,
+            "p25": 0.0,
+            "p75": 0.0,
+            "min": 0.0,
+            "max": 0.0
+          },
+          "bit_distribution": {
+            "16": {
+              "count": 313,
+              "params": 656768,
+              "pct_params": 100.0,
+              "pct_count": 100.0
+            }
+          }
+        },
+        "other": {
+          "total_count": 60,
+          "total_params": 245760,
+          "average_bits": 16.0,
+          "score_stats": {
+            "count": 60,
+            "mean": 0.0,
+            "std": 0.0,
+            "median": 0.0,
+            "p25": 0.0,
+            "p75": 0.0,
+            "min": 0.0,
+            "max": 0.0
+          },
+          "bit_distribution": {
+            "16": {
+              "count": 60,
+              "params": 245760,
+              "pct_params": 100.0,
+              "pct_count": 100.0
+            }
+          }
+        },
+        "router": {
+          "total_count": 61,
+          "total_params": 127926272,
+          "average_bits": 10.2295,
+          "score_stats": {
+            "count": 61,
+            "mean": 0.818628,
+            "std": 0.067867,
+            "median": 0.811881,
+            "p25": 0.790113,
+            "p75": 0.856263,
+            "min": 0.688664,
+            "max": 0.960803
+          },
+          "bit_distribution": {
+            "8": {
+              "count": 44,
+              "params": 92274688,
+              "pct_params": 72.13,
+              "pct_count": 72.13
+            },
+            "16": {
+              "count": 17,
+              "params": 35651584,
+              "pct_params": 27.87,
+              "pct_count": 27.87
+            }
+          }
+        },
+        "vision": {
+          "total_count": 221,
+          "total_params": 454113136,
+          "average_bits": 4.9199,
+          "score_stats": {
+            "count": 221,
+            "mean": 0.223112,
+            "std": 0.229829,
+            "median": 0.401953,
+            "p25": 0.0,
+            "p75": 0.412979,
+            "min": 0.0,
+            "max": 0.9
+          },
+          "bit_distribution": {
+            "4": {
+              "count": 90,
+              "params": 355553280,
+              "pct_params": 78.3,
+              "pct_count": 40.72
+            },
+            "8": {
+              "count": 20,
+              "params": 95625216,
+              "pct_params": 21.06,
+              "pct_count": 9.05
+            },
+            "16": {
+              "count": 111,
+              "params": 2934640,
+              "pct_params": 0.65,
+              "pct_count": 50.23
+            }
+          }
+        }
+      },
+      "layer_summary": {
+        "0": {
+          "tensor_count": 1567,
+          "avg_composite_score": 0.537082,
+          "avg_bits": 8.0715,
+          "bit_counts": {
+            "8": 1553,
+            "16": 14
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "1": {
+          "tensor_count": 18,
+          "avg_composite_score": 0.408418,
+          "avg_bits": 10.6667,
+          "bit_counts": {
+            "8": 12,
+            "16": 6
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "2": {
+          "tensor_count": 18,
+          "avg_composite_score": 0.399043,
+          "avg_bits": 10.6667,
+          "bit_counts": {
+            "8": 12,
+            "16": 6
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "3": {
+          "tensor_count": 15,
+          "avg_composite_score": 0.382697,
+          "avg_bits": 10.6667,
+          "bit_counts": {
+            "8": 10,
+            "16": 5
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "4": {
+          "tensor_count": 18,
+          "avg_composite_score": 0.394779,
+          "avg_bits": 10.6667,
+          "bit_counts": {
+            "8": 12,
+            "16": 6
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "5": {
+          "tensor_count": 18,
+          "avg_composite_score": 0.379606,
+          "avg_bits": 11.1111,
+          "bit_counts": {
+            "8": 11,
+            "16": 7
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "6": {
+          "tensor_count": 18,
+          "avg_composite_score": 0.374974,
+          "avg_bits": 10.6667,
+          "bit_counts": {
+            "8": 9,
+            "4": 2,
+            "16": 7
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "7": {
+          "tensor_count": 15,
+          "avg_composite_score": 0.374939,
+          "avg_bits": 10.9333,
+          "bit_counts": {
+            "8": 8,
+            "4": 1,
+            "16": 6
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "8": {
+          "tensor_count": 18,
+          "avg_composite_score": 0.352532,
+          "avg_bits": 10,
+          "bit_counts": {
+            "4": 5,
+            "8": 6,
+            "16": 7
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "9": {
+          "tensor_count": 18,
+          "avg_composite_score": 0.333122,
+          "avg_bits": 9.7778,
+          "bit_counts": {
+            "4": 6,
+            "8": 5,
+            "16": 7
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "10": {
+          "tensor_count": 18,
+          "avg_composite_score": 0.331862,
+          "avg_bits": 9.5556,
+          "bit_counts": {
+            "4": 7,
+            "8": 4,
+            "16": 7
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "11": {
+          "tensor_count": 15,
+          "avg_composite_score": 0.353927,
+          "avg_bits": 10.6667,
+          "bit_counts": {
+            "4": 2,
+            "8": 7,
+            "16": 6
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "12": {
+          "tensor_count": 18,
+          "avg_composite_score": 0.333576,
+          "avg_bits": 9.3333,
+          "bit_counts": {
+            "4": 6,
+            "8": 6,
+            "16": 6
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "13": {
+          "tensor_count": 18,
+          "avg_composite_score": 0.327762,
+          "avg_bits": 9.3333,
+          "bit_counts": {
+            "4": 6,
+            "8": 6,
+            "16": 6
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "14": {
+          "tensor_count": 18,
+          "avg_composite_score": 0.321647,
+          "avg_bits": 9.3333,
+          "bit_counts": {
+            "4": 6,
+            "8": 6,
+            "16": 6
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "15": {
+          "tensor_count": 15,
+          "avg_composite_score": 0.290525,
+          "avg_bits": 9.0667,
+          "bit_counts": {
+            "4": 6,
+            "8": 4,
+            "16": 5
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "16": {
+          "tensor_count": 18,
+          "avg_composite_score": 0.280913,
+          "avg_bits": 8.6667,
+          "bit_counts": {
+            "4": 9,
+            "8": 3,
+            "16": 6
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "17": {
+          "tensor_count": 18,
+          "avg_composite_score": 0.266677,
+          "avg_bits": 8.4444,
+          "bit_counts": {
+            "4": 10,
+            "8": 2,
+            "16": 6
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "18": {
+          "tensor_count": 18,
+          "avg_composite_score": 0.284235,
+          "avg_bits": 8.6667,
+          "bit_counts": {
+            "4": 9,
+            "8": 3,
+            "16": 6
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "19": {
+          "tensor_count": 15,
+          "avg_composite_score": 0.31659,
+          "avg_bits": 9.6,
+          "bit_counts": {
+            "4": 4,
+            "8": 6,
+            "16": 5
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "20": {
+          "tensor_count": 18,
+          "avg_composite_score": 0.303771,
+          "avg_bits": 9.1111,
+          "bit_counts": {
+            "4": 7,
+            "8": 5,
+            "16": 6
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "21": {
+          "tensor_count": 18,
+          "avg_composite_score": 0.308675,
+          "avg_bits": 9.3333,
+          "bit_counts": {
+            "4": 6,
+            "8": 6,
+            "16": 6
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "22": {
+          "tensor_count": 18,
+          "avg_composite_score": 0.299015,
+          "avg_bits": 9.1111,
+          "bit_counts": {
+            "4": 7,
+            "8": 5,
+            "16": 6
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "23": {
+          "tensor_count": 15,
+          "avg_composite_score": 0.292238,
+          "avg_bits": 9.6,
+          "bit_counts": {
+            "4": 4,
+            "8": 6,
+            "16": 5
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "24": {
+          "tensor_count": 18,
+          "avg_composite_score": 0.298406,
+          "avg_bits": 9.3333,
+          "bit_counts": {
+            "4": 6,
+            "8": 6,
+            "16": 6
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "25": {
+          "tensor_count": 18,
+          "avg_composite_score": 0.299385,
+          "avg_bits": 9.3333,
+          "bit_counts": {
+            "4": 6,
+            "8": 6,
+            "16": 6
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "26": {
+          "tensor_count": 18,
+          "avg_composite_score": 0.3174,
+          "avg_bits": 9.5556,
+          "bit_counts": {
+            "4": 5,
+            "8": 7,
+            "16": 6
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "27": {
+          "tensor_count": 15,
+          "avg_composite_score": 0.295643,
+          "avg_bits": 9.6,
+          "bit_counts": {
+            "4": 4,
+            "8": 6,
+            "16": 5
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "28": {
+          "tensor_count": 18,
+          "avg_composite_score": 0.315755,
+          "avg_bits": 9.7778,
+          "bit_counts": {
+            "4": 4,
+            "8": 8,
+            "16": 6
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "29": {
+          "tensor_count": 18,
+          "avg_composite_score": 0.322861,
+          "avg_bits": 9.7778,
+          "bit_counts": {
+            "4": 4,
+            "8": 8,
+            "16": 6
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "30": {
+          "tensor_count": 18,
+          "avg_composite_score": 0.307027,
+          "avg_bits": 9.5556,
+          "bit_counts": {
+            "4": 5,
+            "8": 7,
+            "16": 6
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "31": {
+          "tensor_count": 15,
+          "avg_composite_score": 0.250068,
+          "avg_bits": 9.0667,
+          "bit_counts": {
+            "4": 6,
+            "8": 4,
+            "16": 5
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "32": {
+          "tensor_count": 18,
+          "avg_composite_score": 0.295686,
+          "avg_bits": 9.3333,
+          "bit_counts": {
+            "4": 6,
+            "8": 6,
+            "16": 6
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "33": {
+          "tensor_count": 18,
+          "avg_composite_score": 0.284454,
+          "avg_bits": 9.3333,
+          "bit_counts": {
+            "4": 6,
+            "8": 6,
+            "16": 6
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "34": {
+          "tensor_count": 18,
+          "avg_composite_score": 0.290136,
+          "avg_bits": 9.3333,
+          "bit_counts": {
+            "4": 6,
+            "8": 6,
+            "16": 6
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "35": {
+          "tensor_count": 15,
+          "avg_composite_score": 0.299869,
+          "avg_bits": 9.6,
+          "bit_counts": {
+            "4": 4,
+            "8": 6,
+            "16": 5
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "36": {
+          "tensor_count": 18,
+          "avg_composite_score": 0.307515,
+          "avg_bits": 9.3333,
+          "bit_counts": {
+            "4": 6,
+            "8": 6,
+            "16": 6
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "37": {
+          "tensor_count": 18,
+          "avg_composite_score": 0.325766,
+          "avg_bits": 9.5556,
+          "bit_counts": {
+            "4": 5,
+            "8": 7,
+            "16": 6
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "38": {
+          "tensor_count": 18,
+          "avg_composite_score": 0.328355,
+          "avg_bits": 9.5556,
+          "bit_counts": {
+            "4": 5,
+            "8": 7,
+            "16": 6
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "39": {
+          "tensor_count": 15,
+          "avg_composite_score": 0.306364,
+          "avg_bits": 9.6,
+          "bit_counts": {
+            "4": 4,
+            "8": 6,
+            "16": 5
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "40": {
+          "tensor_count": 18,
+          "avg_composite_score": 0.323628,
+          "avg_bits": 9.3333,
+          "bit_counts": {
+            "4": 6,
+            "8": 6,
+            "16": 6
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "41": {
+          "tensor_count": 18,
+          "avg_composite_score": 0.328209,
+          "avg_bits": 9.3333,
+          "bit_counts": {
+            "4": 6,
+            "8": 6,
+            "16": 6
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "42": {
+          "tensor_count": 18,
+          "avg_composite_score": 0.340278,
+          "avg_bits": 9.5556,
+          "bit_counts": {
+            "4": 5,
+            "8": 7,
+            "16": 6
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "43": {
+          "tensor_count": 15,
+          "avg_composite_score": 0.319946,
+          "avg_bits": 9.6,
+          "bit_counts": {
+            "4": 4,
+            "8": 6,
+            "16": 5
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "44": {
+          "tensor_count": 18,
+          "avg_composite_score": 0.360454,
+          "avg_bits": 9.7778,
+          "bit_counts": {
+            "4": 4,
+            "8": 8,
+            "16": 6
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "45": {
+          "tensor_count": 18,
+          "avg_composite_score": 0.353062,
+          "avg_bits": 9.7778,
+          "bit_counts": {
+            "4": 4,
+            "8": 8,
+            "16": 6
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "46": {
+          "tensor_count": 18,
+          "avg_composite_score": 0.353916,
+          "avg_bits": 9.7778,
+          "bit_counts": {
+            "4": 4,
+            "8": 8,
+            "16": 6
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "47": {
+          "tensor_count": 15,
+          "avg_composite_score": 0.318352,
+          "avg_bits": 9.6,
+          "bit_counts": {
+            "4": 4,
+            "8": 6,
+            "16": 5
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "48": {
+          "tensor_count": 18,
+          "avg_composite_score": 0.333896,
+          "avg_bits": 9.5556,
+          "bit_counts": {
+            "4": 5,
+            "8": 7,
+            "16": 6
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "49": {
+          "tensor_count": 18,
+          "avg_composite_score": 0.339045,
+          "avg_bits": 9.5556,
+          "bit_counts": {
+            "4": 5,
+            "8": 7,
+            "16": 6
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "50": {
+          "tensor_count": 18,
+          "avg_composite_score": 0.349208,
+          "avg_bits": 9.5556,
+          "bit_counts": {
+            "4": 5,
+            "8": 7,
+            "16": 6
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "51": {
+          "tensor_count": 15,
+          "avg_composite_score": 0.367143,
+          "avg_bits": 10.1333,
+          "bit_counts": {
+            "4": 4,
+            "8": 5,
+            "16": 6
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "52": {
+          "tensor_count": 18,
+          "avg_composite_score": 0.393105,
+          "avg_bits": 10.6667,
+          "bit_counts": {
+            "4": 4,
+            "8": 6,
+            "16": 8
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "53": {
+          "tensor_count": 18,
+          "avg_composite_score": 0.392242,
+          "avg_bits": 10.6667,
+          "bit_counts": {
+            "4": 2,
+            "8": 9,
+            "16": 7
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "54": {
+          "tensor_count": 18,
+          "avg_composite_score": 0.398614,
+          "avg_bits": 11.1111,
+          "bit_counts": {
+            "8": 11,
+            "16": 7
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "55": {
+          "tensor_count": 15,
+          "avg_composite_score": 0.391585,
+          "avg_bits": 11.2,
+          "bit_counts": {
+            "8": 9,
+            "16": 6
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "56": {
+          "tensor_count": 18,
+          "avg_composite_score": 0.429157,
+          "avg_bits": 11.1111,
+          "bit_counts": {
+            "8": 11,
+            "16": 7
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "57": {
+          "tensor_count": 18,
+          "avg_composite_score": 0.42633,
+          "avg_bits": 11.5556,
+          "bit_counts": {
+            "8": 10,
+            "16": 8
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "58": {
+          "tensor_count": 18,
+          "avg_composite_score": 0.433326,
+          "avg_bits": 11.5556,
+          "bit_counts": {
+            "8": 10,
+            "16": 8
+          },
+          "has_8plus_bit_tensors": true
+        },
+        "59": {
+          "tensor_count": 15,
+          "avg_composite_score": 0.441712,
+          "avg_bits": 11.2,
+          "bit_counts": {
+            "8": 9,
+            "16": 6
+          },
+          "has_8plus_bit_tensors": true
+        }
+      },
+      "layers_with_8plus_bits": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59
+      ],
+      "num_layers_with_8plus": 60,
+      "pct_layers_with_8plus": 100.0
+    }
+  },
+  "cross_model_patterns": {
+    "attention_vs_mlp_bits": {
+      "qwen3_8b": {
+        "attention_avg_bits": 6.4444,
+        "mlp_avg_bits": 4.8519,
+        "attention_higher": true,
+        "delta": 1.5925
+      },
+      "maverick": {
+        "attention_avg_bits": 7.1389,
+        "mlp_avg_bits": 4.6807,
+        "attention_higher": true,
+        "delta": 2.4582
+      },
+      "qwen35_397b": {
+        "attention_avg_bits": 7.344,
+        "mlp_avg_bits": 4.9379,
+        "attention_higher": true,
+        "delta": 2.4061
+      }
+    },
+    "attention_higher_across_all": true,
+    "attention_vs_mlp_scores": {
+      "qwen3_8b": {
+        "attention_mean_score": 0.398134,
+        "mlp_mean_score": 0.398747,
+        "attention_higher": false
+      },
+      "maverick": {
+        "attention_mean_score": 0.421792,
+        "mlp_mean_score": 0.410552,
+        "attention_higher": true
+      },
+      "qwen35_397b": {
+        "attention_mean_score": 0.430861,
+        "mlp_mean_score": 0.48773,
+        "attention_higher": false
+      }
+    },
+    "layer_position_sensitivity": {
+      "qwen3_8b": {
+        "first_quarter_avg_score": 0.296394,
+        "middle_half_avg_score": 0.217593,
+        "last_quarter_avg_score": 0.282521,
+        "first_quarter_avg_bits": 10.0202,
+        "middle_half_avg_bits": 9.0909,
+        "last_quarter_avg_bits": 9.7374,
+        "early_more_sensitive": true,
+        "late_more_sensitive": true
+      },
+      "maverick": {
+        "first_quarter_avg_score": 0.256913,
+        "middle_half_avg_score": 0.20212,
+        "last_quarter_avg_score": 0.399524,
+        "first_quarter_avg_bits": 13.1352,
+        "middle_half_avg_bits": 12.4506,
+        "last_quarter_avg_bits": 9.0093,
+        "early_more_sensitive": true,
+        "late_more_sensitive": true
+      },
+      "qwen35_397b": {
+        "first_quarter_avg_score": 0.373731,
+        "middle_half_avg_score": 0.305328,
+        "last_quarter_avg_score": 0.38138,
+        "first_quarter_avg_bits": 10.0966,
+        "middle_half_avg_bits": 9.3615,
+        "last_quarter_avg_bits": 10.4682,
+        "early_more_sensitive": true,
+        "late_more_sensitive": true
+      }
+    },
+    "expert_vs_dense_mlp": {
+      "qwen3_8b": {
+        "mlp_avg_bits": 4.8519,
+        "mlp_count": 108,
+        "mlp_params": 5435817984,
+        "mlp_mean_score": 0.398747
+      },
+      "maverick": {
+        "expert_avg_bits": 4.6667,
+        "expert_count": 48,
+        "expert_params": 386547056640,
+        "expert_mean_score": 0.371672
+      },
+      "qwen35_397b": {
+        "expert_avg_bits": 4.9333,
+        "expert_count": 120,
+        "expert_params": 386547056640,
+        "expert_mean_score": 0.39663
+      }
+    },
+    "attention_8plus_bit_fraction": {
+      "qwen3_8b": {
+        "attention_tensor_count": 144,
+        "at_8bit": 88,
+        "at_16bit": 0,
+        "pct_8plus_bit": 61.1
+      },
+      "maverick": {
+        "attention_tensor_count": 192,
+        "at_8bit": 131,
+        "at_16bit": 3,
+        "pct_8plus_bit": 69.8
+      },
+      "qwen35_397b": {
+        "attention_tensor_count": 60,
+        "at_8bit": 42,
+        "at_16bit": 0,
+        "pct_8plus_bit": 70.0
+      }
+    }
+  }
+}

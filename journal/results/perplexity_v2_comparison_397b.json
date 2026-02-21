@@ -1,0 +1,63 @@
+{
+  "experiment": "smartquant_v2_perplexity_comparison",
+  "model": "Qwen3.5-397B-A17B",
+  "dataset": "allenai/tulu-3-sft-mixture",
+  "parameters": {
+    "sequence_length": 2048,
+    "num_samples": 256,
+    "seed": 42
+  },
+  "results": [
+    {
+      "variant": "smartquant_v1",
+      "group_size": 128,
+      "bits_per_weight": 5.06,
+      "size_gb": 199.1,
+      "perplexity": 4.283,
+      "perplexity_std": 0.016,
+      "note": "Original SWAN with cross_layer metric, loose thresholds"
+    },
+    {
+      "variant": "smartquant_v2_gs128",
+      "group_size": 128,
+      "bits_per_weight": 4.314,
+      "size_gb": 199.1,
+      "perplexity": 4.283,
+      "perplexity_std": 0.016,
+      "note": "SWAN v2: error_proxy metric, kurtosis-weighted, tighter thresholds"
+    },
+    {
+      "variant": "uniform_4bit_gs128",
+      "group_size": 128,
+      "bits_per_weight": 4.251,
+      "size_gb": 196,
+      "perplexity": 4.298,
+      "perplexity_std": 0.016,
+      "note": "Uniform 4-bit with group_size=128, same as SWAN default"
+    },
+    {
+      "variant": "smartquant_v2_gs64",
+      "group_size": 64,
+      "bits_per_weight": 4.563,
+      "size_gb": 210.6,
+      "perplexity": 4.058,
+      "perplexity_std": 0.015,
+      "note": "SWAN v2 with group_size=64 for 4-bit tensors"
+    },
+    {
+      "variant": "uniform_4bit_gs64_mlx_community",
+      "group_size": 64,
+      "bits_per_weight": 4.25,
+      "size_gb": 208.5,
+      "perplexity": 3.931,
+      "note": "mlx-community Qwen3.5-397B-A17B-4bit, group_size=64"
+    }
+  ],
+  "conclusions": [
+    "SWAN v2 matches v1 PPL (4.283) at 16% fewer bits (4.31 vs 5.06)",
+    "At gs=128: SWAN v2 beats uniform 4-bit by 0.015 PPL (4.283 vs 4.298)",
+    "group_size=64 gives major PPL improvement (4.058 vs 4.283), suggesting this is the dominant factor",
+    "The 8-bit allocation to MTP/shared_expert/linear_attn tensors provides small but measurable benefit",
+    "Previous v1 vs uniform comparison was confounded by different group sizes (128 vs 64)"
+  ]
+}

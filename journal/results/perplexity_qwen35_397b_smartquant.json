@@ -1,0 +1,31 @@
+{
+  "model_name": "qwen35_397b",
+  "variant": "smartquant",
+  "model_info": {
+    "path": "/Users/tk/smartquant/models/qwen-smartquant",
+    "size_gb": 199.06,
+    "num_shards": 46,
+    "model_type": "qwen3_5_moe",
+    "num_hidden_layers": 60,
+    "hidden_size": 5120,
+    "vocab_size": 151936,
+    "quantization": {
+      "group_size": 128,
+      "bits": 4,
+      "mode": "affine"
+    }
+  },
+  "parameters": {
+    "sequence_length": 2048,
+    "num_samples": 256,
+    "seed": 42
+  },
+  "perplexity": 4.283,
+  "perplexity_std": 0.016,
+  "elapsed_seconds": 6179.68,
+  "peak_memory_gb": 240.08,
+  "tokens_per_second": 85,
+  "avg_bits": 5.06,
+  "timestamp": "2026-02-21T06:22:00",
+  "note": "Measured directly on remote via mlx_lm.perplexity. Model is Qwen3.5-397B SWAN (mixed 4/8/16 bit)."
+}

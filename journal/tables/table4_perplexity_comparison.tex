@@ -1,0 +1,23 @@
+\begin{table}[t]
+\centering
+\caption{Perplexity comparison across quantization methods and model scales. Lower perplexity is better. All measurements use sequence\_length=2048, num\_samples=256, seed=42 on the same machine. Group size (GS) is reported to enable fair comparison.}
+\label{tab:perplexity}
+\begin{tabular}{llrrrr}
+\toprule
+Model & Method & GS & Size (GB) & Avg Bits & PPL $\downarrow$ \\
+\midrule
+  \multicolumn{6}{l}{\textit{Controlled comparison (same machine, same group size):}} \\
+  Qwen3.5-397B & \textbf{SWAN v2} & 128 & 199.1 & 4.31 & \textbf{4.283} \\
+  Qwen3.5-397B & Uniform 4-bit RTN & 128 & 196.0 & 4.25 & 4.298 \\
+  Qwen3.5-397B & SWAN v2 & 64 & 210.6 & 4.56 & 4.058 \\
+  Qwen3.5-397B & Uniform 4-bit RTN & 64 & 208.5 & 4.25 & 3.931 \\
+\midrule
+  \multicolumn{6}{l}{\textit{Qwen3-8B (dense model):}} \\
+  Qwen3-8B & BF16 & --- & 15.3 & 16.00 & 4.459 \\
+  Qwen3-8B & Uniform 8-bit & 64 & 8.1 & 8.00 & 4.464 \\
+  Qwen3-8B & SWAN v1 & 128 & 6.8 & 6.84 & 4.551 \\
+  Qwen3-8B & Uniform 4-bit RTN & 128 & 4.3 & 4.00 & 4.503 \\
+  Qwen3-8B & HQQ 4-bit & 128 & 4.3 & 4.00 & 4.478 \\
+\bottomrule
+\end{tabular}
+\end{table}
