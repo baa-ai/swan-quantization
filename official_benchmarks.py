@@ -27,6 +27,54 @@ import time
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
+# ---------------------------------------------------------------------------
+# Thermal management
+# ---------------------------------------------------------------------------
+
+def get_soc_temp() -> Optional[float]:
+    """Read Apple Silicon SoC temperature via powermetrics (requires sudo) or
+    fallback to a rough estimate via sysctl. Returns degrees Celsius or None."""
+    try:
+        result = subprocess.run(
+            ["sudo", "-n", "powermetrics", "--samplers", "smc", "-i1", "-n1"],
+            capture_output=True, text=True, timeout=5,
+        )
+        for line in result.stdout.splitlines():
+            if "die temperature" in line.lower() or "SOC" in line:
+                m = re.search(r'([\d.]+)\s*C', line)
+                if m:
+                    return float(m.group(1))
+    except Exception:
+        pass
+    # Fallback: use sysctl thermal (less accurate, but doesn't need sudo)
+    try:
+        result = subprocess.run(
+            ["sysctl", "-n", "machdep.xcpm.cpu_thermal_level"],
+            capture_output=True, text=True, timeout=3,
+        )
+        level = int(result.stdout.strip())
+        # level 0=cool, higher=hotter; map roughly to temp
+        return 50.0 + level * 15.0  # rough heuristic
+    except Exception:
+        return None
+
+
+def thermal_throttle(cooldown: float, warn_temp: float = 90.0):
+    """Sleep for cooldown seconds. If temperature is readable and above
+    warn_temp, sleep extra until it drops or a hard cap is reached."""
+    if cooldown > 0:
+        time.sleep(cooldown)
+    temp = get_soc_temp()
+    if temp is not None and temp >= warn_temp:
+        print(f"  [THERMAL] SoC at {temp:.0f}°C >= {warn_temp:.0f}°C — cooling down ...", flush=True)
+        extra = 0
+        while temp is not None and temp >= warn_temp and extra < 120:
+            time.sleep(5)
+            extra += 5
+            temp = get_soc_temp()
+        if temp is not None:
+            print(f"  [THERMAL] Resumed at {temp:.0f}°C (waited {extra}s extra)", flush=True)
+
 
 # Meta's official BF16 scores for Llama 4 Maverick Instruct
 META_OFFICIAL_SCORES = {
@@ -66,14 +114,17 @@ def generate(model, tokenizer, prompt: str, max_tokens: int = 1024) -> str:
     return response
 
 
-def format_chat_prompt(tokenizer, system: str, user: str) -> str:
+def format_chat_prompt(tokenizer, system: str, user: str, enable_thinking: bool = False) -> str:
     """Format a prompt using the model's chat template."""
     messages = []
     if system:
         messages.append({"role": "system", "content": system})
     messages.append({"role": "user", "content": user})
     try:
-        return tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
+        kwargs = dict(tokenize=False, add_generation_prompt=True)
+        if enable_thinking:
+            kwargs["enable_thinking"] = True
+        return tokenizer.apply_chat_template(messages, **kwargs)
     except Exception:
         # Fallback if chat template fails
         if system:
@@ -166,12 +217,15 @@ def parse_number(s: str) -> Optional[float]:
 # MMLU-Pro Benchmark
 # =============================================================================
 
-def run_mmlu_pro(model, tokenizer, max_questions: int = 1000) -> Dict[str, Any]:
+def run_mmlu_pro(model, tokenizer, max_questions: int = 1000,
+                  enable_thinking: bool = False, cooldown: float = 0.0,
+                  output_path: Optional[str] = None) -> Dict[str, Any]:
     """Run MMLU-Pro benchmark (sampled subset)."""
     from datasets import load_dataset
 
+    mode = "thinking" if enable_thinking else "standard"
     print("\n" + "=" * 60)
-    print("BENCHMARK: MMLU-Pro (0-shot)")
+    print(f"BENCHMARK: MMLU-Pro (0-shot, {mode})")
     print("=" * 60)
 
     print("Loading MMLU-Pro dataset ...")
@@ -223,8 +277,9 @@ def run_mmlu_pro(model, tokenizer, max_questions: int = 1000) -> Dict[str, Any]:
             f"Question: {question}\n\n{options_text}"
         )
 
-        prompt = format_chat_prompt(tokenizer, "", user_prompt)
-        response = generate(model, tokenizer, prompt, max_tokens=2048)
+        max_tok = 8192 if enable_thinking else 2048
+        prompt = format_chat_prompt(tokenizer, "", user_prompt, enable_thinking=enable_thinking)
+        response = generate(model, tokenizer, prompt, max_tokens=max_tok)
         predicted = extract_mcq_answer(response, options)
 
         is_correct = predicted == answer_letter
@@ -238,21 +293,41 @@ def run_mmlu_pro(model, tokenizer, max_questions: int = 1000) -> Dict[str, Any]:
         if is_correct:
             category_results[category]["correct"] += 1
 
-        if (idx_num + 1) % 50 == 0 or idx_num == 0:
+        log_interval = 10 if enable_thinking else 50
+        if (idx_num + 1) % log_interval == 0 or idx_num == 0:
             acc = correct / total_run * 100
             elapsed = time.time() - start_time
             rate = total_run / elapsed
             eta = (len(sampled_indices) - total_run) / rate if rate > 0 else 0
             msg = (f"  [{idx_num+1}/{len(sampled_indices)}] Running acc: {acc:.1f}% "
-                   f"({correct}/{total_run}) | {rate:.1f} q/s | ETA: {eta/60:.0f}m")
-            print(msg)
-        # Write progress every 10 questions to a separate file (atomic write)
+                   f"({correct}/{total_run}) | {rate:.2f} q/s | ETA: {eta/60:.0f}m")
+            print(msg, flush=True)
+        # Write progress every 10 questions
         if (idx_num + 1) % 10 == 0 or idx_num == 0:
             acc = correct / total_run * 100
             elapsed = time.time() - start_time
             rate = total_run / elapsed if elapsed > 0 else 0
             with open(str(Path.home() / "smartquant" / "results" / "progress.txt"), "w") as pf:
                 pf.write(f"mmlu_pro: {idx_num+1}/{len(sampled_indices)} acc={acc:.1f}% rate={rate:.2f}q/s\n")
+            # Incremental JSON save (crash-safe)
+            if output_path:
+                cat_accs_partial = {}
+                for c, r in category_results.items():
+                    ca = r["correct"] / r["total"] * 100 if r["total"] > 0 else 0
+                    cat_accs_partial[c] = {"accuracy": round(ca, 1), "correct": r["correct"], "total": r["total"]}
+                partial = {
+                    "benchmark": "mmlu_pro", "thinking": enable_thinking, "status": "in_progress",
+                    "accuracy": round(acc, 1), "correct": correct, "total": total_run,
+                    "sampled": len(sampled_indices),
+                    "elapsed_seconds": round(elapsed, 1),
+                    "questions_per_second": round(rate, 4),
+                    "category_results": cat_accs_partial,
+                }
+                with open(output_path, "w") as f:
+                    json.dump(partial, f, indent=2)
+
+        # Thermal management between questions
+        thermal_throttle(cooldown)
 
     elapsed = time.time() - start_time
     accuracy = correct / total_run * 100 if total_run > 0 else 0
@@ -263,13 +338,14 @@ def run_mmlu_pro(model, tokenizer, max_questions: int = 1000) -> Dict[str, Any]:
         cat_acc = res["correct"] / res["total"] * 100 if res["total"] > 0 else 0
         cat_accs[cat] = {"accuracy": cat_acc, "correct": res["correct"], "total": res["total"]}
 
-    print(f"\nMMLU-Pro Results: {accuracy:.1f}% ({correct}/{total_run})")
-    print(f"Time: {elapsed:.0f}s ({total_run/elapsed:.1f} q/s)")
+    print(f"\nMMLU-Pro Results ({mode}): {accuracy:.1f}% ({correct}/{total_run})")
+    print(f"Time: {elapsed:.0f}s ({total_run/elapsed:.2f} q/s)")
     for cat, res in sorted(cat_accs.items(), key=lambda x: -x[1]["accuracy"]):
         print(f"  {cat}: {res['accuracy']:.1f}% ({res['correct']}/{res['total']})")
 
     return {
         "benchmark": "mmlu_pro",
+        "thinking": enable_thinking,
         "accuracy": accuracy,
         "correct": correct,
         "total": total_run,
@@ -575,6 +651,8 @@ def run_all_benchmarks(
     benchmarks: List[str],
     mmlu_max_questions: int = 1000,
     output_path: Optional[str] = None,
+    enable_thinking: bool = False,
+    cooldown: float = 0.0,
 ) -> Dict[str, Any]:
     """Run all requested benchmarks on a model."""
 
@@ -582,6 +660,8 @@ def run_all_benchmarks(
 
     results = {
         "model_path": model_path,
+        "thinking": enable_thinking,
+        "cooldown": cooldown,
         "timestamp": time.strftime("%Y-%m-%dT%H:%M:%S"),
         "benchmarks": {},
         "memory": get_memory_info(),
@@ -598,7 +678,11 @@ def run_all_benchmarks(
 
     if "mmlu_pro" in benchmarks:
         try:
-            results["benchmarks"]["mmlu_pro"] = run_mmlu_pro(model, tokenizer, mmlu_max_questions)
+            results["benchmarks"]["mmlu_pro"] = run_mmlu_pro(
+                model, tokenizer, mmlu_max_questions,
+                enable_thinking=enable_thinking, cooldown=cooldown,
+                output_path=output_path,
+            )
             save_partial()
         except Exception as e:
             print(f"\nERROR in MMLU-Pro: {e}")
@@ -674,8 +758,15 @@ def main():
         help="Max MMLU-Pro questions to sample (default: 1000)",
     )
     parser.add_argument("--output", help="Output path for results JSON")
+    parser.add_argument("--thinking", action="store_true",
+                        help="Enable thinking mode (longer generation, chain-of-thought)")
+    parser.add_argument("--cooldown", type=float, default=2.0,
+                        help="Seconds to pause between questions for thermal management (default: 2.0)")
     parser.add_argument("--log", help="Path to write log output (line-buffered)")
     args = parser.parse_args()
+
+    # Always line-buffer stdout (important for long thinking runs)
+    sys.stdout.reconfigure(line_buffering=True)
 
     # Redirect stdout to a log file with line buffering for monitoring
     if args.log:
@@ -689,6 +780,8 @@ def main():
         benchmarks=args.benchmarks,
         mmlu_max_questions=args.mmlu_max_questions,
         output_path=args.output,
+        enable_thinking=args.thinking,
+        cooldown=args.cooldown,
     )
 
 

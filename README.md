@@ -14,8 +14,9 @@ SWAN computes four complementary sensitivity metrics directly on weight tensors 
 
 SWAN outperforms uniform 4-bit quantization at matched group sizes while requiring zero calibration data.
 
-**Academic benchmarks** (Qwen3.5-397B, SWAN quantized):
-- MMLU-Pro: 72.1% | ARC-Challenge: 96.0% | GSM8K: 88.7% | HumanEval: 78.7%
+**Academic benchmarks** (Qwen3.5-397B, SWAN quantized, 0-shot, greedy decoding):
+- MMLU-Pro: **77.1%** (thinking enabled) | 72.1% (thinking disabled)
+- ARC-Challenge: 96.0% | GSM8K: 88.7% | HumanEval: 78.7%
 
 ## How It Works
 

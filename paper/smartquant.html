@@ -164,7 +164,7 @@ We validate SWAN across three model architectures spanning 8B to 400B+ parameter
 (1) all four metrics show statistically significant correlation with actual quantization error (&rho; = 0.80 for kurtosis on 2,347 tensors, <em>p</em> &lt; 0.001);
 (2) the metrics capture non-redundant information (max inter-metric |&rho;| = 0.38);
 (3) consistent sensitivity patterns across architectures, with attention layers receiving 1.6&ndash;2.5 more bits than MLP layers; and
-(4) in controlled perplexity evaluation at matched group sizes, SWAN outperforms uniform 4-bit quantization (4.283 vs 4.298 PPL) on Qwen3.5-397B while achieving 72.1% MMLU-Pro and 96.0% ARC-Challenge at 199&thinsp;GB.
+(4) in controlled perplexity evaluation at matched group sizes, SWAN outperforms uniform 4-bit quantization (4.283 vs 4.298 PPL) on Qwen3.5-397B while achieving 77.1% MMLU-Pro (with thinking) and 96.0% ARC-Challenge at 199&thinsp;GB.
 SWAN's entire analysis pipeline completes in under 13 minutes on commodity hardware, making it practical for models too large for calibration-based methods.
 </div>
 
@@ -442,15 +442,16 @@ bits(<strong>W</strong>) = 16 if S &ge; 0.90 or protected pattern;
 <h3>4.5 Academic Benchmarks</h3>
 
 <table>
-<tr><th>Benchmark</th><th>Score</th><th>Metric</th></tr>
-<tr><td>MMLU-Pro (0-shot)</td><td class="best">72.1%</td><td>Accuracy</td></tr>
-<tr><td>ARC-Challenge (0-shot)</td><td class="best">96.0%</td><td>Accuracy</td></tr>
-<tr><td>GSM8K (0-shot CoT)</td><td class="best">88.7%</td><td>Accuracy</td></tr>
-<tr><td>HumanEval (pass@1)</td><td class="best">78.7%</td><td>Pass rate</td></tr>
+<tr><th>Benchmark</th><th>Score</th><th>Metric</th><th>Thinking</th></tr>
+<tr><td>MMLU-Pro (0-shot)</td><td class="best"><strong>77.1%</strong></td><td>Accuracy</td><td>Enabled</td></tr>
+<tr><td>MMLU-Pro (0-shot)</td><td>72.1%</td><td>Accuracy</td><td>Disabled</td></tr>
+<tr><td>ARC-Challenge (0-shot)</td><td class="best">96.0%</td><td>Accuracy</td><td>Disabled</td></tr>
+<tr><td>GSM8K (0-shot CoT)</td><td class="best">88.7%</td><td>Accuracy</td><td>Disabled</td></tr>
+<tr><td>HumanEval (pass@1)</td><td class="best">78.7%</td><td>Pass rate</td><td>Disabled</td></tr>
 </table>
 <p class="caption">Table 6: Academic benchmark results for Qwen3.5-397B with SWAN mixed-precision quantization (4.31 avg bits, 199 GB). 0-shot evaluation with greedy decoding.</p>
 
-<p>These results demonstrate that SWAN preserves the model's capability across diverse reasoning tasks. The 96.0% ARC-Challenge score is particularly noteworthy, indicating near-perfect science reasoning despite 95.2% of parameters being at 4-bit precision. The model fits entirely in 240&thinsp;GB peak memory on a single Mac Studio with 512&thinsp;GB unified memory.</p>
+<p>These results demonstrate that SWAN preserves the model's capability across diverse reasoning tasks. Qwen3.5 is a thinking model; enabling its native chain-of-thought reasoning (<code>enable_thinking=True</code>) improves MMLU-Pro by +5.0 points (77.1% vs 72.1%), evaluated on 993 stratified questions with <code>max_tokens=8192</code>. The 96.0% ARC-Challenge score is particularly noteworthy, indicating near-perfect science reasoning despite 95.2% of parameters being at 4-bit precision. The model fits entirely in 240&thinsp;GB peak memory on a single Mac Studio with 512&thinsp;GB unified memory.</p>
 
 <hr class="section-divider">
 
