@@ -108,7 +108,7 @@ Cross-model comparison of SWAN sensitivity profiles:
 ### Exp 5: Academic Benchmarks (EXISTING DATA)
 
 From prior work on Qwen3.5-397B SWAN:
-- MMLU-Pro: 72.1%
+- MMLU-Pro: **77.1%** (thinking enabled) | 72.1% (thinking disabled)
 - ARC-Challenge: 96.0%
 - GSM8K: 88.7%
 - HumanEval: 78.7%

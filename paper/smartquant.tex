@@ -34,7 +34,7 @@
 \maketitle
 
 \begin{abstract}
-We present \textbf{SWAN} (\textbf{S}tatistical \textbf{W}eight \textbf{A}nalysis for \textbf{N}-bit allocation), a data-free, per-tensor mixed-precision quantization method for large language models (LLMs) that requires no calibration data, no gradient computation, and no fine-tuning. SWAN computes a composite sensitivity score for each weight tensor using four complementary metrics: SVD spectral concentration, excess kurtosis, output noise amplification, and reconstruction error proxy. These scores drive automatic per-tensor bit-width allocation (2, 4, 8, or 16-bit), enabling aggressive compression of insensitive tensors while preserving precision where it matters most. We validate SWAN across three model architectures spanning 8B to 400B+ parameters---including dense transformers and Mixture-of-Experts (MoE) models with up to 512 experts---demonstrating: (1) all four metrics show statistically significant correlation with actual quantization error ($\rho = 0.80$ for kurtosis on 2,347 tensors, $p < 0.001$); (2) the metrics capture non-redundant information (max inter-metric $|\rho| = 0.38$); (3) consistent sensitivity patterns across architectures, with attention layers receiving 1.6--2.5 more bits than MLP layers; and (4) in controlled perplexity evaluation at matched group sizes, SWAN outperforms uniform 4-bit quantization (4.283 vs 4.298 PPL) on Qwen3.5-397B while achieving 72.1\% MMLU-Pro and 96.0\% ARC-Challenge at 199\,GB. SWAN's entire analysis pipeline completes in under 13 minutes on commodity hardware, making it practical for models too large for calibration-based methods.
+We present \textbf{SWAN} (\textbf{S}tatistical \textbf{W}eight \textbf{A}nalysis for \textbf{N}-bit allocation), a data-free, per-tensor mixed-precision quantization method for large language models (LLMs) that requires no calibration data, no gradient computation, and no fine-tuning. SWAN computes a composite sensitivity score for each weight tensor using four complementary metrics: SVD spectral concentration, excess kurtosis, output noise amplification, and reconstruction error proxy. These scores drive automatic per-tensor bit-width allocation (2, 4, 8, or 16-bit), enabling aggressive compression of insensitive tensors while preserving precision where it matters most. We validate SWAN across three model architectures spanning 8B to 400B+ parameters---including dense transformers and Mixture-of-Experts (MoE) models with up to 512 experts---demonstrating: (1) all four metrics show statistically significant correlation with actual quantization error ($\rho = 0.80$ for kurtosis on 2,347 tensors, $p < 0.001$); (2) the metrics capture non-redundant information (max inter-metric $|\rho| = 0.38$); (3) consistent sensitivity patterns across architectures, with attention layers receiving 1.6--2.5 more bits than MLP layers; and (4) in controlled perplexity evaluation at matched group sizes, SWAN outperforms uniform 4-bit quantization (4.283 vs 4.298 PPL) on Qwen3.5-397B while achieving 77.1\% MMLU-Pro (with thinking) and 96.0\% ARC-Challenge at 199\,GB. SWAN's entire analysis pipeline completes in under 13 minutes on commodity hardware, making it practical for models too large for calibration-based methods.
 \end{abstract}
 
 % ═══════════════════════════════════════════════════════════════════════════════
@@ -253,25 +253,26 @@ Table~\ref{tab:scaling} compares SWAN's bit allocation across three architecture
 \subsection{Academic Benchmarks}
 \label{sec:benchmarks}
 
-We evaluate the SWAN-quantized Qwen3.5-397B (199\,GB, 4.31 avg bits with v2 metrics) on standard academic benchmarks with greedy decoding and thinking disabled:
+We evaluate the SWAN-quantized Qwen3.5-397B (199\,GB, 4.31 avg bits with v2 metrics) on standard academic benchmarks with greedy decoding:
 
 \begin{table}[h]
 \centering
 \caption{Academic benchmark results for Qwen3.5-397B with SWAN mixed-precision quantization (4.31 avg bits, 199\,GB). 0-shot evaluation with greedy decoding.}
 \label{tab:benchmarks}
-\begin{tabular}{lcc}
+\begin{tabular}{lccc}
 \toprule
-Benchmark & Score & Metric \\
+Benchmark & Score & Metric & Thinking \\
 \midrule
-MMLU-Pro (0-shot) & 72.1\% & Accuracy \\
-ARC-Challenge (0-shot) & 96.0\% & Accuracy \\
-GSM8K (0-shot CoT) & 88.7\% & Accuracy \\
-HumanEval (pass@1) & 78.7\% & Pass rate \\
+MMLU-Pro (0-shot) & \textbf{77.1\%} & Accuracy & Enabled \\
+MMLU-Pro (0-shot) & 72.1\% & Accuracy & Disabled \\
+ARC-Challenge (0-shot) & 96.0\% & Accuracy & Disabled \\
+GSM8K (0-shot CoT) & 88.7\% & Accuracy & Disabled \\
+HumanEval (pass@1) & 78.7\% & Pass rate & Disabled \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-These results demonstrate that SWAN preserves the model's capability across diverse reasoning tasks. The 96.0\% ARC-Challenge score is particularly noteworthy, indicating near-perfect science reasoning despite 95.2\% of parameters being at 4-bit precision. The model fits entirely in 240\,GB peak memory on a single Mac Studio with 512\,GB unified memory.
+These results demonstrate that SWAN preserves the model's capability across diverse reasoning tasks. Qwen3.5 is a thinking model; enabling its native chain-of-thought reasoning (\texttt{enable\_thinking=True}) improves MMLU-Pro by +5.0 points (77.1\% vs 72.1\%), evaluated on 993 stratified questions with \texttt{max\_tokens=8192}. The 96.0\% ARC-Challenge score is particularly noteworthy, indicating near-perfect science reasoning despite 95.2\% of parameters being at 4-bit precision. The model fits entirely in 240\,GB peak memory on a single Mac Studio with 512\,GB unified memory.
 
 % ═══════════════════════════════════════════════════════════════════════════════
 \section{Discussion}
