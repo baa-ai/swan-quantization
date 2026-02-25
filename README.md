@@ -53,8 +53,8 @@ pip install -r requirements.txt
 
 ```bash
 python -m smartquant analyze \
-    --model-dir /path/to/model \
-    --output-dir ./analysis
+    --input-dir /path/to/model \
+    --output ./analysis
 ```
 
 This produces a JSON manifest with per-tensor sensitivity scores and bit-width decisions.
@@ -63,9 +63,9 @@ This produces a JSON manifest with per-tensor sensitivity scores and bit-width d
 
 ```bash
 python convert_model.py \
-    --model-dir /path/to/bf16-model \
-    --manifest ./analysis/smartquant_manifest.json \
-    --output-dir ./models/quantized
+    --hf-path /path/to/bf16-model \
+    --manifest ./analysis \
+    --mlx-path ./models/quantized
 ```
 
 ### 3. Run inference
