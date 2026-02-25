@@ -53,8 +53,8 @@ pip install -r requirements.txt
 
 ```bash
 python -m smartquant analyze \
-    --model-dir /path/to/model \
-    --output-dir ./analysis
+    --input-dir /path/to/model \
+    --output ./analysis
 ```
 
 This produces a JSON manifest with per-tensor sensitivity scores and bit-width decisions.
